@@ -1,10 +1,10 @@
 
 import sys
 sys.path.append('..')
+import redditScraper
 
-from redditScraper import *
 def getTopPostCommentsTest():
-    comments = getTopPostComments("ProgrammerHumor")
+    comments = redditScraper.getTopPostComments("ProgrammerHumor")
     assert len(comments) != 0
     assert type(comments) == list
     assert type(comments[0]) == list
