@@ -16,10 +16,13 @@ def getTopPostComments(subreddit : str) -> list[str]:
             break
         if (post.stickied or post.url.endswith(('jpg', 'jpeg', 'png', 'gif'))):
             continue
+        parsedBody = parsePostBody(post.selftext)
+        if(parsedBody == "error"):
+            continue
         tempList = []
         post.comments.replace_more(limit=0)
         tempList.append(post.title)
-        tempList.append(post.selftext)
+        tempList.append(parsedBody)
         count = 0
         for top_level_comment in post.comments:
             if(top_level_comment.stickied):
@@ -36,6 +39,7 @@ def getTopPostComments(subreddit : str) -> list[str]:
     print(topComments)
     return topComments
 
+#TODO: for both parsers make sure to remove \n and \ before apostrphes maybe
 def parseComments(comment : str) -> str:
     if(len(comment) > 1000):
         return "error"
@@ -44,6 +48,17 @@ def parseComments(comment : str) -> str:
     for line in lines:
         comment = comment.replace(line,"*" * len(line))
     return comment
+
+def parsePostBody(body : str) -> str:
+    if(len(body) > 2500):
+        return "error"
+    f = open("bannedWordList.txt", "r")
+    lines = f.readlines()
+    for line in lines:
+        body = body.replace(line, "*" * len(line))
+    return body
+
+getTopPostComments("csmajors")
 
 
 
