@@ -15,10 +15,14 @@ def getTopPostComments(subreddit : str) -> list[str]:
         tempList = []
         post.comments.replace_more(limit=0)
         tempList.append(post.title)
+        count = 0
         for top_level_comment in post.comments:
             tempList.append(top_level_comment.body)
+            count += 1
+            #Only pull 5 top comments
+            if count > 5:
+                break
         topComments.append(tempList)
-    print(topComments)
     return topComments
 
 
