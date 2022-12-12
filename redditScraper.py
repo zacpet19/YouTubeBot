@@ -9,8 +9,19 @@ user_agent = os.getenv('user_agent')
 reddit = praw.Reddit(client_id=client_id,client_secret=client_secret,user_agent=user_agent)
 
 
-def getTopPost(subreddit : str) -> list[str]:
-    for submission in reddit.subreddit(subreddit).hot(limit=4):
-        print(submission.title)
+def getTopPostComments(subreddit : str) -> list[str]:
+    topComments = []
+    for post in reddit.subreddit(subreddit).hot(limit=4):
+        tempList = []
+        post.comments.replace_more(limit=0)
+        tempList.append(post.title)
+        for top_level_comment in post.comments:
+            tempList.append(top_level_comment.body)
+        topComments.append(tempList)
+    print(topComments)
+    return topComments
 
-getTopPost("ProgrammerHumor")
+
+
+
+getTopPostComments("ProgrammerHumor")
