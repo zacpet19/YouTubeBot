@@ -1,3 +1,4 @@
 .env
 __pycache__
-BannedWordsList.txt
+__pycache__/
+bannedWordList.txt

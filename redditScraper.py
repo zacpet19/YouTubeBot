@@ -1,7 +1,6 @@
 import os 
 import praw
 from dotenv import load_dotenv
-from profanity_filter import ProfanityFilter
 load_dotenv()
 client_id = os.getenv('client_id')
 client_secret = os.getenv('client_secret')
@@ -25,7 +24,10 @@ def getTopPostComments(subreddit : str) -> list[str]:
         for top_level_comment in post.comments:
             if(top_level_comment.stickied):
                 continue
-            tempList.append(top_level_comment.body)
+            parsed = parseComments(top_level_comment.body)
+            if parsed == "error":
+                continue
+            tempList.append(parsed)
             count += 1
             #Only pull 5 top comments
             if count > 5:
@@ -37,17 +39,11 @@ def getTopPostComments(subreddit : str) -> list[str]:
 def parseComments(comment : str) -> str:
     if(len(comment) > 1000):
         return "error"
-    pf = ProfanityFilter()
-    comment = pf.censor(comment)
+    f = open("bannedWordList.txt","r")
+    lines = f.readlines()
+    for line in lines:
+        comment = comment.replace(line,"*" * len(line))
     return comment
 
-print(parseComments("fuck"))
 
 
-
-
-
-
-
-
-getTopPostComments("csmajors")
