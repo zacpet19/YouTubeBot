@@ -8,7 +8,6 @@ import os
 class ScreenShot:
 
     def __init__(self, path):
-        self.count = 1
         try:
             ser = Service(path)
             self.driver = webdriver.Chrome(service=ser, options=webdriver.ChromeOptions())
@@ -17,25 +16,27 @@ class ScreenShot:
             self.driver.quit()
             raise e
 
-    def takeScreenShot(self, url):
+    def takeScreenShot(self, urls : [str]):
         """function(url) -> None, saves screenshot in ./images directory"""
-        try:
-            self.driver.get(url)
-        except Exception as e:
-            print("Error: Failed to access URL")
-            raise e
-        try:
-            element = self.driver.find_element(By.CSS_SELECTOR, "[data-testid='post-container']")
-        except Exception as e:
-            print("Error: failed to find CSS element on webpage")
-            raise e
-        image = element.screenshot_as_png
-        imageStream = io.BytesIO(image)
-        im = Image.open(imageStream)
-        if not os.path.exists("./images"):
-            os.makedirs("./images")
-        im.save(f"./images/{self.count}.png")
-        self.count += 1
+        count = 1
+        for url in urls:
+            try:
+                self.driver.get(url)
+            except Exception as e:
+                print("Error: Failed to access URL")
+                raise e
+            try:
+                element = self.driver.find_element(By.CSS_SELECTOR, "[data-testid='post-container']")
+            except Exception as e:
+                print("Error: failed to find CSS element on webpage")
+                raise e
+            image = element.screenshot_as_png
+            imageStream = io.BytesIO(image)
+            im = Image.open(imageStream)
+            if not os.path.exists("./images"):
+                os.makedirs("./images")
+            im.save(f"./images/{count}.png")
+            count += 1
 
 
     def closeDriver(self):

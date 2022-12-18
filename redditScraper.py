@@ -1,6 +1,9 @@
-import os 
+import os
+from typing import Tuple, List, Any
+
 import praw
 from dotenv import load_dotenv
+from screenshotWebpage import ScreenShot
 load_dotenv()
 client_id = os.getenv('client_id')
 client_secret = os.getenv('client_secret')
@@ -9,8 +12,11 @@ user_agent = os.getenv('user_agent')
 reddit = praw.Reddit(client_id=client_id,client_secret=client_secret,user_agent=user_agent)
 
 
-def getTopPostComments(subreddit : str) -> list[str]:
+def getTopPostComments(subreddit : str) -> tuple[list[list[str]], list[str]]:
+    """getTopPostComments takes in the name of the subreddit and then returns a tuple that contains a 2d array of posts
+    and comments as well as a list of urls"""
     topComments = []
+    urlArray = []
     for post in reddit.subreddit(subreddit).hot(limit=20):
         if(len(topComments) > 4):
             break
@@ -23,6 +29,7 @@ def getTopPostComments(subreddit : str) -> list[str]:
         post.comments.replace_more(limit=0)
         tempList.append(post.title)
         tempList.append(parsedBody)
+        urlArray.append(post.url)
         count = 0
         for top_level_comment in post.comments:
             if(top_level_comment.stickied):
@@ -37,7 +44,7 @@ def getTopPostComments(subreddit : str) -> list[str]:
                 break
         topComments.append(tempList)
     print(topComments)
-    return topComments
+    return (topComments, urlArray)
 
 #TODO: for both parsers make sure to remove \n and \ before apostrphes maybe
 def parseComments(comment : str) -> str:
@@ -58,7 +65,6 @@ def parsePostBody(body : str) -> str:
         body = body.replace(line, "*" * len(line))
     return body
 
-getTopPostComments("csmajors")
 
 
 
