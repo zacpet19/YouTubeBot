@@ -4,3 +4,4 @@ __pycache__/
 bannedWordList.txt
 logs.txt
 audio
+images
