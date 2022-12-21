@@ -94,11 +94,30 @@ class ScreenShot:
                     raise e
         #makes sure the page is loaded up and the button can be clicked on before doing the clicking action
         try:
-            elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, 'upload-video-button')))
+            elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, "edit-buttons")))
         except Exception as e:
             print("Couldn't locate provided element or page took too long to load")
             raise e
-        action.move_to_element(elementToMoveTo).double_click().perform()
+        action.move_to_element(elementToMoveTo).perform()
+        action.move_by_offset(yoffset=0, xoffset=100).click().perform()
+        #swicthes the driver to work out of the new window that was just opened
+        attempts = 0
+        while attempts < 5:
+            try:
+                attempts += 1
+                self.driver.switch_to.window(self.driver.window_handles[1])
+            except Exception as e:
+                print("Page took to long to load.")
+                action.pause(3).perform()
+                if attempts >= 5:
+                    raise e
+        try:
+            elementToMoveTo = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable((By.ID, "create-icon")))
+        except Exception as e:
+            print("Couldn't locate provided element or page took too long to load")
+            raise e
+        action.click(elementToMoveTo).perform()
+        action.move_by_offset(yoffset=32, xoffset=0).click().perform()
         attempts = 0
         #while loop tries to upload the video the enter key is to get rid of potential popups since if there is 0 popups
         #the enter key does nothing on that screen
@@ -132,6 +151,7 @@ class ScreenShot:
                     print("Couldn't locate provided element or page took too long to load")
                     raise e
         action.click(elementToMoveTo).perform()
+        #these next two lines dont do anything as of right now but is necessary to add tags at a later point
         elementToMoveTo = self.driver.find_element(By.ID, "toggle-button")
         action.scroll_to_element(elementToMoveTo).perform()
         elementToMoveTo = self.driver.find_element(By.ID, "offRadio")
@@ -150,5 +170,7 @@ class ScreenShot:
         elementToMoveTo = self.driver.find_element(By.ID, "done-button")
         action.click(elementToMoveTo).perform()
         action.pause(20).perform()
+
     def closeDriver(self):
         self.driver.quit()
+
