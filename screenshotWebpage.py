@@ -43,6 +43,10 @@ class ScreenShot:
             count += 1
 
     def uploadYoutubeVideo(self, channel : str, username : str, password : str, filepath : str, videoInfo : dict):
+        """this method takes in a url to a channel, a gmail username/password, a filepath to the mp4 you would like
+        to upload, and a dictionary containing video info on the tital and description. Then it uses selenium to upload
+        the video to the youtube channel provided"""
+        """TODO Make it possible to add tags and do way more exception handling"""
         enter = Keys.ENTER
         try:
             self.driver.get(channel)
@@ -60,25 +64,91 @@ class ScreenShot:
         elementToMoveTo = self.driver.find_element(By.XPATH, "//ytd-button-renderer[@class='style-scope ytd-masthead']//a[@aria-label='Sign in']//div[@class='yt-spec-touch-feedback-shape__fill']")
         action = ActionChains(self.driver)
         action.move_to_element(elementToMoveTo).double_click().perform()
-        #this is to make it wait for the webpage to load before typing anything in pretty sure any kind of element
-        #search would work here
+        attempts = 0
+        #while loop attempts to input the gmail 5 times and errors if it doesnt work
+        '#TODO: Consider adding something that deletes the previous attempt'
+        while attempts < 5:
+            action.send_keys(username).perform()
+            try:
+                attempts += 1
+                WebDriverWait(self.driver, 2).until(EC.text_to_be_present_in_element_value((By.NAME, "identifier"), username))
+                action.send_keys(enter).perform()
+                break
+            except Exception as e:
+                if attempts >= 5:
+                    print("Element name not found on Gmail login page or took too long to load")
+                    raise e
+        attempts = 0
+        #while loop will try to enter the password until it finds that the password is present in the page and after 5
+        #attempts it will stop and end the program
+        while attempts < 5:
+            action.send_keys(password).perform()
+            try:
+                attempts += 1
+                WebDriverWait(self.driver, 2).until(EC.text_to_be_present_in_element_value((By.NAME, "Passwd"), password))
+                action.send_keys(enter).perform()
+                break
+            except Exception as e:
+                if attempts >= 5:
+                    print("Element name not found on Gmail login page or took too long to load")
+                    raise e
+        #makes sure the page is loaded up and the button can be clicked on before doing the clicking action
         try:
-            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#identifierIddddddd")))
+            elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, 'upload-video-button')))
         except Exception as e:
-            print("CSS selector not found on Gmail login page or took too long to load")
+            print("Couldn't locate provided element or page took too long to load")
             raise e
-        action.send_keys(username).send_keys(enter).perform()
-        action.pause(2).perform()
-        action.send_keys(password).send_keys(enter).perform()
-        action.pause(5).perform()
-        elementToMoveTo = self.driver.find_element(By.ID, 'upload-video-button')
         action.move_to_element(elementToMoveTo).double_click().perform()
-        action.pause(5)
-        action.send_keys(enter).perform()
-        "# have to send a file using the driver instead of the ActionChains object for some reason"
-        self.driver.find_element(By.XPATH, '//*[@id="content"]/input').send_keys(filepath)
+        attempts = 0
+        #while loop tries to upload the video the enter key is to get rid of potential popups since if there is 0 popups
+        #the enter key does nothing on that screen
+        while attempts < 5:
+            action.send_keys(enter).perform()
+            "# have to send a file using the driver instead of the ActionChains object for some reason"
+            self.driver.find_element(By.XPATH, '//*[@id="content"]/input').send_keys(filepath)
+            try:
+                wait.until(EC.element_to_be_clickable((By.ID, 'textbox')))
+                break
+            except Exception as e:
+                print("Couldn't locate provided element or page took too long to load")
+                raise e
         action.pause(10)
         action.send_keys(videoInfo["Title"]).perform()
+        elementToMoveTo = self.driver.find_element(By.ID, "description-container")
+        action.click(elementToMoveTo).send_keys(videoInfo["Description"]).perform()
+        #this part and the next try block might not actually be doing anything and is unceccassary
+        #this is suppose to pick a randomly generated youtube thumbnail but it might no even need to pick one
+        elementToMoveTo = self.driver.find_element(By.ID, "still-picker")
+        action.scroll_to_element(elementToMoveTo).perform()
+        attempts = 0
+        while attempts < 5:
+            try:
+                attempts += 1
+                WebDriverWait(self.driver, 6).until(EC.element_to_be_clickable((elementToMoveTo)))
+                print("element is clickable")
+                break
+            except Exception as e:
+                if attempts >= 5:
+                    print("Couldn't locate provided element or page took too long to load")
+                    raise e
+        action.click(elementToMoveTo).perform()
+        elementToMoveTo = self.driver.find_element(By.ID, "toggle-button")
+        action.scroll_to_element(elementToMoveTo).perform()
+        elementToMoveTo = self.driver.find_element(By.ID, "offRadio")
+        action.move_to_element(elementToMoveTo).perform()
+        action.move_by_offset(yoffset=25, xoffset=0).click().perform()
+        elementToMoveTo = self.driver.find_element(By.ID, "toggle-button")
+        action.scroll_to_element(elementToMoveTo).click(elementToMoveTo).perform()
+        elementToMoveTo = self.driver.find_element(By.ID, "next-button")
+        action.click(elementToMoveTo).perform()
+        action.click(elementToMoveTo).perform()
+        action.click(elementToMoveTo).perform()
+        elementToMoveTo = self.driver.find_element(By.NAME, "PUBLIC")
+        action.click(elementToMoveTo).perform()
+        #this will definitely need some error handling due to Youtube taking awhile to verify your youtube video isnt
+        #copywright infringement
+        elementToMoveTo = self.driver.find_element(By.ID, "done-button")
+        action.click(elementToMoveTo).perform()
         action.pause(20).perform()
     def closeDriver(self):
         self.driver.quit()
