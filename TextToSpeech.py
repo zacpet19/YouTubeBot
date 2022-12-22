@@ -22,11 +22,15 @@ class TextToSpeech:
     @staticmethod
     def makeAudioFileSameLength(clipPath : str, clipToChangePath : str):
         """This will take in filepaths to two audio files with the first file being the one that will set the length
-        for the other file."""
+        for the other file. Returns false if files cannot be found."""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
-        clip = AudioFileClip(clipPath)
-        clipToChange = AudioFileClip(clipToChangePath)
+        try:
+            clip = AudioFileClip(clipPath)
+            clipToChange = AudioFileClip(clipToChangePath)
+        except Exception as e:
+            print("Error: Failed to find one or more of provided files.")
+            return False
         if clip.duration < clipToChange.duration:
             clipToChangeSubclip = clipToChange.subclip(0, clip.duration - 1)
             clipToChangeSubclip.write_audiofile("audio/modMusic.mp3")
@@ -45,7 +49,13 @@ class TextToSpeech:
          completion after the others have stopped"""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
-        mergedAudio = CompositeAudioClip(clipsToMerge)
+        if len(clipsToMerge) > 1:
+            print("Error: List size must be greater that one.")
+        try:
+            mergedAudio = CompositeAudioClip(clipsToMerge)
+        except Exception as e:
+            print("Error: Failed to find one or more provided files.")
+            return False
         mergedAudio.write_audiofile("audio/finalAudio.mp3", fps=44100)
         mergedAudio.close()
 
@@ -57,13 +67,17 @@ class TextToSpeech:
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         if duration == 0:
-            print("Duration must be longer than 0")
+            print("Error: Duration must be longer than 0")
             return False
-        clip = AudioFileClip(clipToCutPath)
-        clipDuration = int(clip.duration)
+        try:
+            clip = AudioFileClip(clipToCutPath)
+            clipDuration = int(clip.duration)
+        except Exception as e:
+            print("Error: Failed to find one or more of provided filepaths.")
+            return False
         if duration >= clipDuration:
             clip.close()
-            print("Duration given longer than audio file length")
+            print("Error: Duration given longer than audio file length")
             return False
         cut = random.randrange(duration, clipDuration + 1)
         cutAudio = clip.subclip(cut - duration, cut)
@@ -73,8 +87,15 @@ class TextToSpeech:
 
     @staticmethod
     def getRandomFile(directory : str) -> str:
-        """Returns the name of a random file from a given directory"""
-        files = os.listdir(directory)
+        """Returns the name of a random file from a given directory. Returns an empty string on failure."""
+        try:
+            files = os.listdir(directory)
+        except Exception as e:
+            print("Error: Failed to find directory.")
+            return ""
+        if len(files) == 0:
+            print("Error: Directory has no files.")
+            return ""
         randomNum = random.randrange(0, len(files))
         return files[randomNum]
 
