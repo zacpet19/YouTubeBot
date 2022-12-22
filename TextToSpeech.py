@@ -52,7 +52,8 @@ class TextToSpeech:
     @staticmethod
     def randomAudioCutout(clipToCutPath : str, duration : int):
         """This method takes in a filepath to and mp3 and a duration you want the new clip to be. Then it randomly
-        creates a subclip of the provided duration and then saves it into memory."""
+        creates a subclip of the provided duration and then saves it into memory. It will return false if given
+        bad parameters."""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         if duration == 0:
@@ -64,11 +65,20 @@ class TextToSpeech:
             clip.close()
             print("Duration given longer than audio file length")
             return False
-        cut = random.randrange(duration, clipDuration)
+        cut = random.randrange(duration, clipDuration + 1)
         cutAudio = clip.subclip(cut - duration, cut)
         cutAudio.write_audiofile("audio/cutoutAudio.mp3")
         cutAudio.close()
         clip.close()
+
+    @staticmethod
+    def getRandomFile(directory : str) -> str:
+        """Returns the name of a random file from a given directory"""
+        files = os.listdir(directory)
+        randomNum = random.randrange(0, len(files))
+        return files[randomNum]
+
+
 
 
 
