@@ -1,5 +1,6 @@
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.editor import concatenate_videoclips
+from moviepy.video.VideoClip import ImageClip
 import moviepy.video.fx.all as vfx
 import os
 
@@ -7,7 +8,7 @@ import os
 class VideoMethods:
     @staticmethod
     def setVideoDurationAndRemoveAudio(videoPath : str, duration : int, startCut=0):
-        """Takes in a filepath to an mp4 file and then makes it the input duration. If the video is longer than the
+        """Takes in a filepath to a mp4 file and then makes it the input duration. If the video is longer than the
         duration it cuts the end of the video to the given duration and if the video is shorter than the given
         duration it loops it until it is long enough. The startCut parameter allows for choosing when to start the
         video."""
@@ -41,6 +42,18 @@ class VideoMethods:
                 loopedVideo.close()
         clip.close()
 
+    @staticmethod
+    def createImageVideo(imagePath : str, duration : int):
+        """IMPORTANT:Image passed in must have even dimensions or the video made will be black!!!!"""
+        if not os.path.exists("./video"):
+            os.makedirs("./video")
+        try:
+            clip = ImageClip(imagePath, duration=duration)
+        except Exception as e:
+            print("Error: Could not find file.")
+            return False
+        clip.write_videofile("video/imageVideo.mp4", fps=24)
+        clip.close()
 
 
 
