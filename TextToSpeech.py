@@ -2,7 +2,8 @@ from gtts import gTTS
 from moviepy.editor import AudioFileClip
 from moviepy.audio.fx.audio_loop import *
 from moviepy.editor import CompositeAudioClip
-import os 
+import os
+import random
 
 class TextToSpeech:
     @staticmethod
@@ -47,6 +48,28 @@ class TextToSpeech:
         mergedAudio = CompositeAudioClip(clipsToMerge)
         mergedAudio.write_audiofile("audio/finalAudio.mp3", fps=44100)
         mergedAudio.close()
+
+    @staticmethod
+    def randomAudioCutout(clipToCutPath : str, duration : int):
+        """This method takes in a filepath to and mp3 and a duration you want the new clip to be. Then it randomly
+        creates a subclip of the provided duration and then saves it into memory."""
+        if not os.path.exists("./audio"):
+            os.makedirs("./audio")
+        if duration == 0:
+            print("Duration must be longer than 0")
+            return False
+        clip = AudioFileClip(clipToCutPath)
+        clipDuration = int(clip.duration)
+        if duration >= clipDuration:
+            clip.close()
+            print("Duration given longer than audio file length")
+            return False
+        cut = random.randrange(duration, clipDuration)
+        cutAudio = clip.subclip(cut - duration, cut)
+        cutAudio.write_audiofile("audio/cutoutAudio.mp3")
+        cutAudio.close()
+        clip.close()
+
 
 
 
