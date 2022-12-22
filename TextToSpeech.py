@@ -8,6 +8,7 @@ import random
 class TextToSpeech:
     @staticmethod
     def textToSpeech(text):
+        """Takes in text and uses gTTP to turn it into a mp3 file and then saves it into memory."""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         count = 1
@@ -22,7 +23,9 @@ class TextToSpeech:
     @staticmethod
     def makeAudioFileSameLength(clipPath : str, clipToChangePath : str):
         """This will take in filepaths to two audio files with the first file being the one that will set the length
-        for the other file. Returns false if files cannot be found."""
+        for the other file. If the first file is shorter it will cut the clip to be change to that size and if the first
+        file is longer it will loop the clip to change until it is the same length.Returns false if files cannot be
+        found."""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         try:
