@@ -1,7 +1,9 @@
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.editor import concatenate_videoclips
 from moviepy.video.VideoClip import ImageClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 import moviepy.video.fx.all as vfx
+from moviepy.editor import AudioFileClip
 from PIL import Image
 import os
 
@@ -77,9 +79,47 @@ class VideoMethods:
 
     @staticmethod
     def resizeVideoClip(clipPath : str, height : int, width : int):
-        clip = VideoFileClip(clipPath, target_resolution=(height, width))
+        if not os.path.exists("./video"):
+            os.makedirs("./video")
+        try:
+            clip = VideoFileClip(clipPath, target_resolution=(height, width))
+        except Exception as e:
+            print("Error: Could not find file.")
+            return False
         clip.write_videofile("video/resizedVideo.mp4")
         clip.close()
+
+    @staticmethod
+    def combineVideoClips(*filePaths : str):
+        if not os.path.exists("./video"):
+            os.makedirs("./video")
+        clips = []
+        try:
+            for path in filePaths:
+                clips.append(VideoFileClip(path))
+        except Exception as e:
+            print("One or more of provided files not found.")
+            raise e
+        combinedClip = CompositeVideoClip(clips)
+        combinedClip.write_videofile("video/combinedVideo.mp4")
+        combinedClip.close()
+        for clip in clips:
+            clip.close()
+
+    @staticmethod
+    def setVideoClipAudio(videoClipPath : str, audioClipPath : str):
+        if not os.path.exists("./video"):
+            os.makedirs("./video")
+        try:
+            videoClip = VideoFileClip(videoClipPath)
+            audioClip = AudioFileClip(audioClipPath)
+        except Exception as e:
+            print("One or more of provided files not found.")
+            raise e
+        final = videoClip.set_audio(audioClip)
+        final.write_videofile("video/finalVideo.mp4")
+        videoClip.close()
+        audioClip.close()
 
 
 
