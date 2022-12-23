@@ -8,7 +8,7 @@ import random
 class TextToSpeech:
     @staticmethod
     def textToSpeech(text):
-        """Takes in text and uses gTTP to turn it into a mp3 file and then saves it into memory."""
+        """Takes in a 2d array of text and uses gTTP to turn it into a mp3 file and then saves it into memory."""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         count = 1

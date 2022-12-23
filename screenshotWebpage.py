@@ -137,7 +137,7 @@ class ScreenShot:
         action.click(elementToMoveTo).send_keys(videoInfo["Description"]).perform()
         #this part and the next try block might not actually be doing anything and is unceccassary
         #this is suppose to pick a randomly generated youtube thumbnail but it might no even need to pick one
-        elementToMoveTo = self.driver.find_element(By.ID, "still-picker")
+        """elementToMoveTo = self.driver.find_element(By.ID, "still-picker")
         action.scroll_to_element(elementToMoveTo).perform()
         attempts = 0
         while attempts < 5:
@@ -151,6 +151,7 @@ class ScreenShot:
                     print("Couldn't locate provided element or page took too long to load")
                     raise e
         action.click(elementToMoveTo).perform()
+        """
         #these next two lines dont do anything as of right now but is necessary to add tags at a later point
         elementToMoveTo = self.driver.find_element(By.ID, "toggle-button")
         action.scroll_to_element(elementToMoveTo).perform()
@@ -173,4 +174,3 @@ class ScreenShot:
 
     def closeDriver(self):
         self.driver.quit()
-

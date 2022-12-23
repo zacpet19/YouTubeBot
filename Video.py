@@ -10,7 +10,7 @@ import os
 
 class VideoMethods:
     @staticmethod
-    def formatVideoForYoutubeShort(videoPath : str, duration : int, startCut=0):
+    def formatBackgroundVideoForYoutubeShort(videoPath : str, duration : int, startCut=0):
         """Takes in a filepath to a mp4 file and then makes it the input duration. If the video is longer than the
         duration it cuts the end of the video to the given duration and if the video is shorter than the given
         duration it loops it until it is long enough. The startCut parameter allows for choosing when to start the
@@ -49,6 +49,8 @@ class VideoMethods:
 
     @staticmethod
     def resizeImageToEvenDimensions(imagePath : str):
+        if not os.path.exists("./images"):
+            os.makedirs("./images")
         try:
             image = Image.open(imagePath)
         except Exception as e:
@@ -60,7 +62,7 @@ class VideoMethods:
         if width % 2 != 0:
             width += 1
         reSizedImage = image.resize((width, height))
-        reSizedImage.save("reSizedImage.png")
+        reSizedImage.save("images/reSizedImage.png")
         reSizedImage.close()
         image.close()
 
