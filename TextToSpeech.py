@@ -1,9 +1,11 @@
 from gtts import gTTS
 from moviepy.editor import AudioFileClip
 from moviepy.audio.fx.audio_loop import *
+from moviepy.audio.fx.volumex import *
 from moviepy.editor import CompositeAudioClip
 import os
 import random
+
 
 class TextToSpeech:
     @staticmethod
@@ -52,15 +54,21 @@ class TextToSpeech:
          completion after the others have stopped"""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
-        if len(clipsToMerge) > 1:
+        if len(clipsToMerge) <= 1:
             print("Error: List size must be greater that one.")
+            return False
+        audioFiles = []
         try:
-            mergedAudio = CompositeAudioClip(clipsToMerge)
+            for clip in clipsToMerge:
+                audioFiles.append(AudioFileClip(clip))
         except Exception as e:
             print("Error: Failed to find one or more provided files.")
-            return False
+            raise e
+        mergedAudio = CompositeAudioClip(audioFiles)
         mergedAudio.write_audiofile("audio/finalAudio.mp3", fps=44100)
         mergedAudio.close()
+        for file in audioFiles:
+            file.close()
 
     @staticmethod
     def randomAudioCutout(clipToCutPath : str, duration : int):
@@ -102,8 +110,22 @@ class TextToSpeech:
         randomNum = random.randrange(0, len(files))
         return files[randomNum]
 
-
-
-
+    @staticmethod
+    def changeAudioClipVolume(clipToChange : str, volume):
+        """Uses moviepy to create a new clip with a new volume. Unsure at this time how different number exactly impact
+        audio but any volume lower than 1 lowers the volume and anything above 1 should raise the volume. The
+        parameter clipToChange should be a file path to a audio file and volume can be an int or a double."""
+        if volume <= 0:
+            print("New Volume must be larger than 0")
+            return False
+        try:
+            newClip = AudioFileClip(clipToChange)
+        except Exception as e:
+            print("Error: Failed to find one or more of provided filepaths.")
+            return False
+        change = volumex(newClip, volume)
+        change.write_audiofile("audio/changedVolume.mp3")
+        newClip.close()
+        change.close()
 
 
