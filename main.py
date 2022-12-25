@@ -1,21 +1,28 @@
 import os
-
-import redditScraper
+from redditScraper import RedditScraper
 from TextToSpeech import TextToSpeech
 from screenshotWebpage import ScreenShot
 from moviepy.editor import AudioFileClip
 from Video import VideoMethods
 from dotenv import load_dotenv
 
-load_dotenv()
-gmail = os.getenv('gmail')
-password = os.getenv('gmailPassword')
-channel = os.getenv('youtubeChannel')
-#this needs an absolute filepath
-finalVideoPath = os.getenv('finalVideoPath')
+
 
 def main():
-    (comments, urls) = redditScraper.getTopPostComments("csmajors")
+
+    load_dotenv()
+    gmail = os.getenv('gmail')
+    password = os.getenv('gmailPassword')
+    channel = os.getenv('youtubeChannel')
+    #this needs an absolute filepath
+    finalVideoPath = os.getenv('finalVideoPath')
+    client_id = os.getenv('client_id')
+    client_secret = os.getenv('client_secret')
+    user_agent = os.getenv('user_agent')
+
+
+    reddit = RedditScraper(client_id,client_secret,user_agent)
+    (comments, urls) = reddit.getTopPostComments("csmajors")
     screenShotter = ScreenShot("a")
     screenShotter.takeScreenShot(urls)
     print("Reddit Scraped")
