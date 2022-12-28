@@ -23,7 +23,8 @@ def main():
     TextToSpeech.textToSpeech(comments)
     print("text to speech complete")
     randomBackgroundMusic = TextToSpeech.getRandomFile("bndms")
-    TextToSpeech.makeAudioFileSameLength("audio/1.mp3", f"bndms/{randomBackgroundMusic}")
+    TextToSpeech.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .1)
+    TextToSpeech.makeAudioFileSameLength("audio/1.mp3", "audio/changedVol.mp3")
     print("random background music created")
     #need to open mp3 files inside the method
     TextToSpeech.mergeAudioFiles(["audio/1.mp3", "audio/modMusic.mp3"])

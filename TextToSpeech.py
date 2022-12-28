@@ -111,7 +111,7 @@ class TextToSpeech:
         return files[randomNum]
 
     @staticmethod
-    def changeAudioClipVolume(clipToChange : str, volume):
+    def changeAudioClipVolume(clipToChange : str, newFileName : str, volume):
         """Uses moviepy to create a new clip with a new volume. Unsure at this time how different number exactly impact
         audio but any volume lower than 1 lowers the volume and anything above 1 should raise the volume. The
         parameter clipToChange should be a file path to a audio file and volume can be an int or a double."""
@@ -124,8 +124,11 @@ class TextToSpeech:
             print("Error: Failed to find one or more of provided filepaths.")
             return False
         change = volumex(newClip, volume)
-        change.write_audiofile("audio/changedVolume.mp3")
+        change.write_audiofile(newFileName)
         newClip.close()
         change.close()
+
+
+
 
 
