@@ -33,7 +33,6 @@ def main():
     TextToSpeech.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .1)
     TextToSpeech.makeAudioFileSameLength("audio/1.mp3", "audio/changedVol.mp3")
     print("random background music created")
-    #need to open mp3 files inside the method
     TextToSpeech.mergeAudioFiles(["audio/1.mp3", "audio/modMusic.mp3"])
     print("Audio files merged")
     finalAudio = AudioFileClip("audio/finalAudio.mp3")
@@ -45,7 +44,7 @@ def main():
     print("Image resized")
     VideoMethods.createImageVideo("images/reSizedImage.png", finalAudioDuration)
     print("Image video created")
-    VideoMethods.resizeVideoClip("video/imageVideo.mp4", 600, 800)
+    VideoMethods.resizeVideoClip("video/imageVideo.mp4", 900, 750)
     print("Image Video Resized")
     VideoMethods.combineVideoClips("video/silentVideo.mp4", "video/resizedVideo.mp4")
     print("Final Video made")

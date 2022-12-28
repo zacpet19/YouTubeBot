@@ -7,6 +7,9 @@ import os
 import random
 
 
+"""Current known Audio issues: Text to speech says random punctuation and says things you cant see like if there is a 
+whole bunch of spaces(ie. hashx200b was said mutiple times in one."""
+
 class TextToSpeech:
     @staticmethod
     def textToSpeech(text):
