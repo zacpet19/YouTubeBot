@@ -1,5 +1,6 @@
 from gtts import gTTS
 from moviepy.editor import AudioFileClip
+from moviepy.editor import concatenate_audioclips
 from moviepy.audio.fx.audio_loop import *
 from moviepy.audio.fx.volumex import *
 from moviepy.editor import CompositeAudioClip
@@ -12,17 +13,55 @@ whole bunch of spaces(ie. hashx200b was said mutiple times in one."""
 
 class TextToSpeech:
     @staticmethod
-    def textToSpeech(text):
-        """Takes in a 2d array of text and uses gTTP to turn it into a mp3 file and then saves it into memory."""
+    def textToSpeech(text, silencePath=""):
+        """Takes in a 2d array of text (reddit post/comments and uses gTTP to turn it into a mp3 file and then saves it
+        into memory while keeping it under a minute long. The silence path is a variable that takes in the file path to
+        a silence audioClip if you would like to have pauses between comments and posts. You could add any other mp3
+        files between them as well."""
+        """TODO: Delete directories and files made from this. This method will not work subsequently if this is not
+        done."""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         count = 1
+        #this is to help account for added audio duration from a silent clip or anything else in between posts/comments
+        inBetweenAudioDuration = 0
+        if silencePath != "":
+            try:
+                inBetweenAudio = AudioFileClip(silencePath)
+            except Exception as e:
+                print("Error: Failed to find provided audio path")
+                raise e
+            inBetweenAudioDuration = inBetweenAudio.duration
+            inBetweenAudio.close()
         for i in text:
-            stringBuilder = ""
+            if not os.path.exists(f"./audio/post{count}"):
+                os.makedirs(f"./audio/post{count}")
+            duration = 0
+            innerCount = 1
             for j in i:
-                stringBuilder += j
-            audio = gTTS(text=stringBuilder,lang = "en", slow=False, tld = "US")
-            audio.save(f"./audio/{count}.mp3")
+                audio = gTTS(text=j,lang = "en", slow=False, tld = "US")
+                audio.save(f"./audio/post{count}/{innerCount}.mp3")
+                audioToAdd = AudioFileClip(f"./audio/post{count}/{innerCount}.mp3")
+                duration += audioToAdd.duration
+                audioToAdd.close()
+                if duration >= 60:
+                    break
+                duration += inBetweenAudioDuration
+                innerCount += 1
+            if innerCount > 2:
+                audioFiles = os.listdir(f"./audio/post{count}")
+                audioFiles.pop()
+                clips = []
+                for c in audioFiles:
+                    clips.append(AudioFileClip(f"./audio/post{count}/{c}"))
+                    if silencePath != "" and c != audioFiles[-1]:
+                        clips.append(AudioFileClip(silencePath))
+                finalClip = concatenate_audioclips(clips)
+                finalClip.write_audiofile(f"audio/{count}.mp3")
+                for clip in clips:
+                    clip.close()
+            else:
+                print("Initial text body provided was too long or only post title audio was included")
             count += 1
 
     @staticmethod

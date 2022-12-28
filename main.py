@@ -27,7 +27,7 @@ def main():
     screenShotter.takeScreenShot(urls)
     print("Reddit Scraped")
     screenShotter.closeDriver()
-    TextToSpeech.textToSpeech(comments)
+    TextToSpeech.textToSpeech(comments, silencePath="audio/500milsil.mp3")
     print("text to speech complete")
     randomBackgroundMusic = TextToSpeech.getRandomFile("bndms")
     TextToSpeech.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .1)
