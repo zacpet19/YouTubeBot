@@ -61,7 +61,8 @@ class VideoMethods:
             raise e
         (width, height) = image.size
         height = int(height * 1.35)
-        width = int(width * 1.35)
+        width = int(width * 1.45)
+        #gives image even dimensions because moviepy image videos need to have even dimensions or they dont work
         if height % 2 != 0:
             height += 1
         if width % 2 != 0:
@@ -143,17 +144,5 @@ class VideoMethods:
         videoClip.close()
         audioClip.close()
 
-
-#VideoMethods.resizeImageToEvenDimensions("images/1.png")
-"""image = Image.open("C:/Users/zachp/PycharmProjects/Test/images/5.png")
-reSizedImage = image.resize((900, 400))
-reSizedImage.save("images/reSizedImage.png", quality=100)
-reSizedImage.close()
-image.close()"""
-#VideoMethods.createImageVideo("C:/Users/zachp/PycharmProjects/Test/images/5.png", 10)
-#VideoMethods.createImageVideo("C:/Users/zachp/PycharmProjects/Test/images/reSizedImage.png", 10)
-#VideoMethods.combineVideoClips("video/silentVideo.mp4", "video/big.mp4")
-#VideoMethods.combineVideoClips("video/silentVideo.mp4", "video/imageVideo.mp4")
-#Need to resize image before making it into a video!!!!!!!!!!!!!!!!!!
 
 

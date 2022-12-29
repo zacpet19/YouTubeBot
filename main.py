@@ -20,14 +20,14 @@ def main():
     client_secret = os.getenv('client_secret')
     user_agent = os.getenv('user_agent')
 
-
+    TextToSpeech.clearAudioFolder()
     reddit = RedditScraper(client_id,client_secret,user_agent)
     (comments, urls) = reddit.getTopPostComments("csmajors")
     screenShotter = ScreenShot("a")
     screenShotter.takeScreenShot(urls)
     print("Reddit Scraped")
     screenShotter.closeDriver()
-    TextToSpeech.textToSpeech(comments, silencePath="audio/500milsil.mp3")
+    TextToSpeech.textToSpeech(comments, silencePath="permAudio/500milsil.mp3")
     print("text to speech complete")
     randomBackgroundMusic = TextToSpeech.getRandomFile("bndms")
     TextToSpeech.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .1)

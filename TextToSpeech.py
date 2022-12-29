@@ -67,6 +67,33 @@ class TextToSpeech:
             shutil.rmtree(f"audio/post{count}")
             count += 1
 
+    @staticmethod
+    def parseTextToSpeechMP3s():
+        """Parses the text to speech mp3 files by making sure they are not too short ot long. Returns a list of the
+        file names or an empty string if there are no files that match the given criteria."""
+        if not os.path.exists("./audio"):
+            return ""
+        count = 1
+        textToSpeechFileNames = []
+        while count < 6:
+            if os.path.exists(f"audio/{count}.mp3"):
+                clip = AudioFileClip(f"audio/{count}.mp3")
+                if 20 < clip.duration < 60:
+                    textToSpeechFileNames.append(f"audio/{count}.mp3")
+                clip.close()
+            count += 1
+        if len(textToSpeechFileNames) == 0:
+            return ""
+        return textToSpeechFileNames
+
+    @staticmethod
+    def clearAudioFolder():
+        """Clears out the audio folder while leaving the directory."""
+        audioFiles = os.listdir("audio")
+        if len(audioFiles) == 0:
+            return
+        for file in audioFiles:
+            os.remove(f"audio/{file}")
 
     @staticmethod
     def makeAudioFileSameLength(clipPath : str, clipToChangePath : str):
@@ -173,8 +200,6 @@ class TextToSpeech:
         change.write_audiofile(newFileName)
         newClip.close()
         change.close()
-
-
 
 
 
