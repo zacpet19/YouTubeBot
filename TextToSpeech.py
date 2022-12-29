@@ -6,6 +6,7 @@ from moviepy.audio.fx.volumex import *
 from moviepy.editor import CompositeAudioClip
 import os
 import random
+import shutil
 
 
 """Current known Audio issues: Text to speech says random punctuation and says things you cant see like if there is a 
@@ -62,7 +63,10 @@ class TextToSpeech:
                     clip.close()
             else:
                 print("Initial text body provided was too long or only post title audio was included")
+            #Be careful messing with this because it removes an entire directory and all things below it
+            shutil.rmtree(f"audio/post{count}")
             count += 1
+
 
     @staticmethod
     def makeAudioFileSameLength(clipPath : str, clipToChangePath : str):
@@ -169,6 +173,7 @@ class TextToSpeech:
         change.write_audiofile(newFileName)
         newClip.close()
         change.close()
+
 
 
 
