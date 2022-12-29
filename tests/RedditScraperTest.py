@@ -1,10 +1,21 @@
-
+import os
+from dotenv import load_dotenv
 import sys
 sys.path.append('..')
+from redditScraper import RedditScraper
 import redditScraper
 
 def getTopPostCommentsTest():
-    comments = redditScraper.getTopPostComments("csmajors")
+    load_dotenv()
+    client_id = os.getenv('client_id')
+    client_secret = os.getenv('client_secret')
+    user_agent = os.getenv('user_agent')
+
+    reddit = RedditScraper(client_id,client_secret,user_agent)
+    (comments,urls) = redditScraper.getTopPostComments("csmajors")
+    assert len(urls) != 0
+    assert type(urls) == list
+    assert type(urls[0]) == str
     assert len(comments) != 0
     assert type(comments) == list
     assert type(comments[0]) == list
