@@ -22,6 +22,7 @@ class ScreenShot:
 
     def takeScreenShot(self, urls : [str]):
         """function(url) -> None, saves screenshot in ./images directory"""
+        self.driver.maximize_window()
         count = 1
         for url in urls:
             try:

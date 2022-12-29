@@ -62,7 +62,7 @@ class VideoMethods:
         if width % 2 != 0:
             width += 1
         reSizedImage = image.resize((width, height))
-        reSizedImage.save("images/reSizedImage.png")
+        reSizedImage.save("images/reSizedImage.png", quality=100)
         reSizedImage.close()
         image.close()
 
@@ -76,7 +76,7 @@ class VideoMethods:
         except Exception as e:
             print("Error: Could not find file.")
             return False
-        clip.write_videofile("video/imageVideo.mp4", fps=24)
+        clip.write_videofile("video/imageVideo.mp4", fps=7)
         clip.close()
 
     @staticmethod
@@ -122,9 +122,6 @@ class VideoMethods:
         final.write_videofile("video/finalVideo.mp4")
         videoClip.close()
         audioClip.close()
-
-
-
 
 
 
