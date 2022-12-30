@@ -32,7 +32,7 @@ def main():
     parsedTextToSpeech = TextToSpeech.parseTextToSpeechMP3s()
     print(parsedTextToSpeech[0])
     randomBackgroundMusic = TextToSpeech.getRandomFile("bndms")
-    TextToSpeech.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .1)
+    TextToSpeech.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .2)
     TextToSpeech.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
     print("random background music created")
     TextToSpeech.mergeAudioFiles([parsedTextToSpeech[0], "audio/modMusic.mp3"])
@@ -41,17 +41,19 @@ def main():
     finalAudioDuration = int(finalAudio.duration)
     finalAudio.close()
     randomBackgroundVideo = TextToSpeech.getRandomFile("bndvd")
-    VideoMethods.formatBackgroundVideoForYoutubeShort(f"video/{randomBackgroundVideo}", finalAudioDuration)
-    print("Background video formated")
-    VideoMethods.resizeImageForYouTubeShort(f"images/{parsedTextToSpeech[0][6:7]}.png")
+    VideoMethods.formatBackgroundVideoForYoutubeShort(f"bndvd/{randomBackgroundVideo}", finalAudioDuration)
+    print("Background video formatted")
+    (imageWidth, _imageHeight) = VideoMethods.resizeImageForYouTubeShort(f"images/{parsedTextToSpeech[0][6:7]}.png")
     print("Image resized")
     VideoMethods.createImageVideo("images/reSizedImage.png", finalAudioDuration)
     print("Image video created")
-    VideoMethods.combineVideoClips("video/silentVideo.mp4", "video/imageVideo.mp4")
+    #YouTube shorts are 1080 pixels wide
+    newYPos = (1080 - imageWidth) / 2
+    VideoMethods.combineVideoClips("video/silentVideo.mp4", "video/imageVideo.mp4", xPosition=65, yPosition=newYPos)
     print("Final Video made")
     VideoMethods.setVideoClipAudio("video/combinedVideo.mp4", "audio/finalAudio.mp3")
     print("Final video given Audio")
-    thisDict = {"Title" : "Reddit Test Video 4", "Description" : "Still testing"}
+    thisDict = {"Title" : "Reddit Test Video 5", "Description" : "Still testing"}
     youtubeUploader = ScreenShot("a")
     youtubeUploader.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, thisDict)
     print("Video uploaded")

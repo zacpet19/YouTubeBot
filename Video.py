@@ -51,7 +51,8 @@ class VideoMethods:
     def resizeImageForYouTubeShort(imagePath : str):
         """This method is a general resizing method for images that will make its dimensions even because MoviePy
         only can make image videos of images with even dimensions. It also makes the image a bit bigger. The image
-        should be resized before video creation to help keep the quality of the image."""
+        should be resized before video creation to help keep the quality of the image. It also returns the new height
+        and width to help with formating the video"""
         if not os.path.exists("./images"):
             os.makedirs("./images")
         try:
@@ -71,6 +72,7 @@ class VideoMethods:
         reSizedImage.save("images/reSizedImage.png", quality=100)
         reSizedImage.close()
         image.close()
+        return (width, height)
 
     @staticmethod
     def resizeImage(imagePath : str, width : int, height : int):
@@ -113,7 +115,7 @@ class VideoMethods:
         clip.close()
 
     @staticmethod
-    def combineVideoClips(*filePaths : str):
+    def combineVideoClips(*filePaths : str, xPosition=0, yPosition=0):
         if not os.path.exists("./video"):
             os.makedirs("./video")
         clips = []
@@ -123,6 +125,7 @@ class VideoMethods:
         except Exception as e:
             print("One or more of provided files not found.")
             raise e
+        clips[1] = clips[1].set_position((xPosition, yPosition))
         combinedClip = CompositeVideoClip(clips)
         combinedClip.write_videofile("video/combinedVideo.mp4")
         combinedClip.close()
@@ -143,6 +146,3 @@ class VideoMethods:
         final.write_videofile("video/finalVideo.mp4")
         videoClip.close()
         audioClip.close()
-
-
-
