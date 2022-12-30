@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import sys
 sys.path.append('..')
 from redditScraper import RedditScraper
-import redditScraper
+
 
 def getTopPostCommentsTest():
     load_dotenv()
@@ -12,7 +12,7 @@ def getTopPostCommentsTest():
     user_agent = os.getenv('user_agent')
 
     reddit = RedditScraper(client_id,client_secret,user_agent)
-    (comments,urls) = redditScraper.getTopPostComments("csmajors")
+    (comments,urls) = reddit.getTopPostComments("csmajors")
     assert len(urls) != 0
     assert type(urls) == list
     assert type(urls[0]) == str

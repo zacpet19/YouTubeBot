@@ -12,7 +12,7 @@ class RedditScraper:
             f = open("visitedRedditPages.txt", "r")
             lines = f.readlines()
             for line in lines:
-                self.pastUrls.add(line)
+                self.pastUrls.add(line.replace("\n", ""))
         except Exception:
             print("Failed to open visitedRedditPages.txt, duplicate posts may be used")
         #Check if bannedWordList exists
@@ -63,10 +63,9 @@ class RedditScraper:
             topComments.append(tempList)
         print(topComments)
         #Document visited urls to avoid duplicate 
-        #TODO : check if \n is needed
         f = open("visitedRedditPages.txt", "a")
         for url in urlArray:
-            f.write(url + '\n')
+            f.write(url + "\n")
         f.close()
 
         return (topComments, urlArray)
