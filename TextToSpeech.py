@@ -19,8 +19,6 @@ class TextToSpeech:
         into memory while keeping it under a minute long. The silence path is a variable that takes in the file path to
         a silence audioClip if you would like to have pauses between comments and posts. You could add any other mp3
         files between them as well."""
-        """TODO: Delete directories and files made from this. This method will not work subsequently if this is not
-        done."""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         count = 1
@@ -90,13 +88,11 @@ class TextToSpeech:
         return textToSpeechFileNames
 
     @staticmethod
-    def clearAudioFolder():
-        """Clears out the audio folder while leaving the directory."""
-        audioFiles = os.listdir("audio")
-        if len(audioFiles) == 0:
-            return
-        for file in audioFiles:
-            os.remove(f"audio/{file}")
+    def removeAudioFolder():
+        """Removes the audio folder and all subdirectories. Does nothing if audio folder doesn't exist"""
+        if os.path.exists("./audio"):
+            #Be careful messing around with this as it removes entire directories
+            shutil.rmtree("audio")
 
     @staticmethod
     def makeAudioFileSameLength(clipPath : str, clipToChangePath : str):
@@ -203,6 +199,8 @@ class TextToSpeech:
         change.write_audiofile(newFileName)
         newClip.close()
         change.close()
+
+
 
 
 

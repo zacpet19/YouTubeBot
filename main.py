@@ -20,7 +20,7 @@ def main():
     client_secret = os.getenv('client_secret')
     user_agent = os.getenv('user_agent')
 
-    TextToSpeech.clearAudioFolder()
+    TextToSpeech.removeAudioFolder()
     reddit = RedditScraper(client_id,client_secret,user_agent)
     (comments, urls) = reddit.getTopPostComments("askreddit")
     screenShotter = ScreenShot("a")
@@ -53,6 +53,8 @@ def main():
     print("Final Video made")
     VideoMethods.setVideoClipAudio("video/combinedVideo.mp4", "audio/finalAudio.mp3")
     print("Final video given Audio")
+    #parsed textToSpeech contains the relative filepath names of the textToSpeech files. Since they are named
+    #numerically this slice will be the number given to it
     title = comments[int(parsedTextToSpeech[0][6:7]) - 1][0]
     if len(title) > 50:
         title = f"{title[:50]}..."
