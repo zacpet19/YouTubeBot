@@ -30,7 +30,7 @@ def main():
     count = 0
     reddit = RedditScraper(client_id, client_secret, user_agent)
     #loops until it is able to get a usable mp3 file from Reddit posts
-    while foundUsableRedditPosts is False:
+    while not foundUsableRedditPosts:
         if count > 20:
             print("Error: Unable to find usable reddit posts.")
             sys.exit()
@@ -43,10 +43,10 @@ def main():
         TextToSpeech.removeAudioFolder()
         TextToSpeech.textToSpeech(comments, silencePath="permAudio/500milsil.mp3")
         parsedTextToSpeech = TextToSpeech.parseTextToSpeechMP3s()
-        if parsedTextToSpeech == "":
-            continue
-        foundUsableRedditPosts = True
-        print("text to speech complete")
+        if len(parsedTextToSpeech) > 0:
+            foundUsableRedditPosts = True
+            
+    print("text to speech complete")
 
     #Take screenshots of reddit posts
     screenShotter = ScreenShot("a")

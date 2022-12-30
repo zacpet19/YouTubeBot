@@ -70,10 +70,10 @@ class TextToSpeech:
 
     @staticmethod
     def parseTextToSpeechMP3s():
-        """Parses the text to speech mp3 files by making sure they are not too short ot long. Returns a list of the
-        file names or an empty string if there are no files that match the given criteria."""
+        """Parses the text to speech mp3 files by making sure they are not too short to long. Returns a list of the
+        file names that match the given criteria."""
         if not os.path.exists("./audio"):
-            return ""
+            return []
         count = 1
         textToSpeechFileNames = []
         while count < 6:
@@ -83,8 +83,6 @@ class TextToSpeech:
                     textToSpeechFileNames.append(f"audio/{count}.mp3")
                 clip.close()
             count += 1
-        if len(textToSpeechFileNames) == 0:
-            return ""
         return textToSpeechFileNames
 
     @staticmethod
