@@ -5,6 +5,7 @@ from screenshotWebpage import ScreenShot
 from moviepy.editor import AudioFileClip
 from Video import VideoMethods
 from dotenv import load_dotenv
+import sys
 
 
 
@@ -20,23 +21,37 @@ def main():
     client_secret = os.getenv('client_secret')
     user_agent = os.getenv('user_agent')
     #Should check for missing environment variables here
-    
 
-    #Scrape reddit posts and take screenshots of them
-    reddit = RedditScraper(client_id,client_secret,user_agent)
-    (comments, urls) = reddit.getTopPostComments("csmajors")
+    #declaring variables to store things found in the while loop
+    foundUsableRedditPosts = False
+    comments = ""
+    urls = ""
+    parsedTextToSpeech = ""
+    count = 0
+    reddit = RedditScraper(client_id, client_secret, user_agent)
+    #loops until it is able to get a usable mp3 file from Reddit posts
+    while foundUsableRedditPosts is False:
+        if count > 20:
+            print("Error: Unable to find usable reddit posts.")
+            sys.exit()
+        count += 1
+        #Scrape reddit posts
+        (comments, urls) = reddit.getTopPostComments("csmajors")
+        print("Reddit Scraped")
+
+        #Create TTS .mp3 files with reddit posts
+        TextToSpeech.removeAudioFolder()
+        TextToSpeech.textToSpeech(comments, silencePath="permAudio/500milsil.mp3")
+        parsedTextToSpeech = TextToSpeech.parseTextToSpeechMP3s()
+        if parsedTextToSpeech == "":
+            continue
+        foundUsableRedditPosts = True
+        print("text to speech complete")
+
+    #Take screenshots of reddit posts
     screenShotter = ScreenShot("a")
     screenShotter.takeScreenShot(urls)
     screenShotter.closeDriver()
-    print("Reddit Scraped")
-
-
-    #Create TTS .mp3 files with reddit posts
-    TextToSpeech.removeAudioFolder()
-    TextToSpeech.textToSpeech(comments, silencePath="permAudio/500milsil.mp3")
-    parsedTextToSpeech = TextToSpeech.parseTextToSpeechMP3s()
-    print("text to speech complete")
-
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
     randomBackgroundMusic = TextToSpeech.getRandomFile("bndms")

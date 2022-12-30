@@ -78,7 +78,7 @@ class RedditScraper:
 
 
     def parseComments(self,comment : str) -> str:
-        """TODO: Not currently censoring all the bad words. FIX"""
+        """TODO: Not currently censoring all the bad words. Parse out URLS"""
         if(len(comment) > 1000):
             return "error"
         if not self.shouldCensor:
@@ -92,7 +92,7 @@ class RedditScraper:
 
 
     def parsePostBody(self,body : str) -> str:
-        """TODO: Not currently censoring all the bad words. FIX"""
+        """TODO: Not currently censoring all the bad words. Parse out URLS"""
         if(len(body) > 2500):
             return "error"
         if not self.shouldCensor:
