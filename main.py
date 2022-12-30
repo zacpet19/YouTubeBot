@@ -53,9 +53,13 @@ def main():
     print("Final Video made")
     VideoMethods.setVideoClipAudio("video/combinedVideo.mp4", "audio/finalAudio.mp3")
     print("Final video given Audio")
-    thisDict = {"Title" : "Reddit Test Video 5", "Description" : "Still testing"}
+    title = comments[int(parsedTextToSpeech[0][6:7]) - 1][0]
+    if len(title) > 50:
+        title = f"{title[:50]}..."
+    description = comments[int(parsedTextToSpeech[0][6:7]) - 1][0]
+    videoData = {"Title" : title, "Description" : description}
     youtubeUploader = ScreenShot("a")
-    youtubeUploader.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, thisDict)
+    youtubeUploader.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
     print("Video uploaded")
     youtubeUploader.closeDriver()
 if __name__ == '__main__':
