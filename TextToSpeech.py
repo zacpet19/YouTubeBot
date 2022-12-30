@@ -40,6 +40,9 @@ class TextToSpeech:
             duration = 0
             innerCount = 1
             for j in i:
+                #reddit scraper will pull empty string if the post body is empty and this is to address that
+                if j == "":
+                    continue
                 audio = gTTS(text=j,lang = "en", slow=False, tld = "US")
                 audio.save(f"./audio/post{count}/{innerCount}.mp3")
                 audioToAdd = AudioFileClip(f"./audio/post{count}/{innerCount}.mp3")

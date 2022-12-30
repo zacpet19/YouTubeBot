@@ -22,7 +22,7 @@ def main():
 
     TextToSpeech.clearAudioFolder()
     reddit = RedditScraper(client_id,client_secret,user_agent)
-    (comments, urls) = reddit.getTopPostComments("csmajors")
+    (comments, urls) = reddit.getTopPostComments("askreddit")
     screenShotter = ScreenShot("a")
     screenShotter.takeScreenShot(urls)
     print("Reddit Scraped")
