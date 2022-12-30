@@ -19,15 +19,12 @@ def main():
     client_id = os.getenv('client_id')
     client_secret = os.getenv('client_secret')
     user_agent = os.getenv('user_agent')
-
-
-    TextToSpeech.removeAudioFolder()
     #Should check for missing environment variables here
     
 
     #Scrape reddit posts and take screenshots of them
     reddit = RedditScraper(client_id,client_secret,user_agent)
-    (comments, urls) = reddit.getTopPostComments("askreddit")
+    (comments, urls) = reddit.getTopPostComments("csmajors")
     screenShotter = ScreenShot("a")
     screenShotter.takeScreenShot(urls)
     screenShotter.closeDriver()
@@ -35,7 +32,7 @@ def main():
 
 
     #Create TTS .mp3 files with reddit posts
-    TextToSpeech.clearAudioFolder()
+    TextToSpeech.removeAudioFolder()
     TextToSpeech.textToSpeech(comments, silencePath="permAudio/500milsil.mp3")
     parsedTextToSpeech = TextToSpeech.parseTextToSpeechMP3s()
     print("text to speech complete")

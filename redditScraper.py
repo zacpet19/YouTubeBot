@@ -25,15 +25,21 @@ class RedditScraper:
 
         
 
-    def getTopPostComments(self, subreddit : str) -> tuple[list[list[str]], list[str]]:
-        """getTopPostComments takes in the name of the subreddit and then returns a tuple that contains a 2d array of posts
-        and comments as well as a list of urls"""
-
-        topComments = []
+    def getTopPostComments(self, subreddit : str, numberOfPosts=1, depth=20) -> tuple[list[list[str]], list[str]]:
+        """getTopPostComments takes in a name of a subreddit and then returns a tuple that contains a 2d array of posts
+        and comments as well as a list of urls. The number of posts parameter decides how many posts from reddit to
+        pull. The depth parameter decides how many posts deep to go into hot posts before abandoning the scrape."""
+        #postInfo will be a 2d array that will have posts at each index and the posts will have the post title at the
+        #0th index, post body at the 1st, and post contents for whats remaining
+        postInfo = []
         urlArray = []
-        for post in self.reddit.subreddit(subreddit).hot(limit=20):
-            if(len(topComments) > 4):
+        if numberOfPosts < 1:
+            print("Number of Posts must be greater than 1.")
+            return (postInfo, urlArray)
+        for post in self.reddit.subreddit(subreddit).hot(limit=depth):
+            if(len(postInfo) >= numberOfPosts):
                 break
+            #avoids non text posts
             if (post.stickied or post.url.endswith(('jpg', 'jpeg', 'png', 'gif'))):
                 continue
             if (post.url in self.pastUrls):
@@ -60,15 +66,15 @@ class RedditScraper:
                 #Only pull 5 top comments
                 if count > 5:
                     break
-            topComments.append(tempList)
-        print(topComments)
+            postInfo.append(tempList)
+        print(postInfo)
         #Document visited urls to avoid duplicate 
         f = open("visitedRedditPages.txt", "a")
         for url in urlArray:
             f.write(url + "\n")
         f.close()
 
-        return (topComments, urlArray)
+        return (postInfo, urlArray)
 
 
     def parseComments(self,comment : str) -> str:
@@ -86,6 +92,7 @@ class RedditScraper:
 
 
     def parsePostBody(self,body : str) -> str:
+        """TODO: Not currently censoring all the bad words. FIX"""
         if(len(body) > 2500):
             return "error"
         if not self.shouldCensor:
