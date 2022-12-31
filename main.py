@@ -70,7 +70,9 @@ def main():
     finalAudio.close()
     #Pull random video from bndvd directory and format it for youtube shorts
     randomBackgroundVideo = TextToSpeech.getRandomFile("bndvd")
-    VideoMethods.formatBackgroundVideoForYoutubeShort(f"bndvd/{randomBackgroundVideo}", finalAudioDuration)
+    backgroundVideoStart = VideoMethods.getRandomPointInVideo(f"bndvd/{randomBackgroundVideo}")
+    VideoMethods.formatBackgroundVideoForYoutubeShort(f"bndvd/{randomBackgroundVideo}", finalAudioDuration,
+                                                      startCut=backgroundVideoStart)
     print("Background video formatted")
 
     #Resize post screenshot to fit youtube shorts

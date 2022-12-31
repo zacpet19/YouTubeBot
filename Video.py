@@ -6,6 +6,7 @@ import moviepy.video.fx.all as vfx
 from moviepy.editor import AudioFileClip
 from PIL import Image
 import os
+import random
 
 
 class VideoMethods:
@@ -46,6 +47,15 @@ class VideoMethods:
                 loopedVideo.write_videofile("video/silentVideo.mp4", audio=False)
                 loopedVideo.close()
         clip.close()
+
+    @staticmethod
+    def getRandomPointInVideo(videoPath : str) -> int:
+        """Takes in a filepath to a mp4 file and then returns a random number within the duration of the clip in
+        seconds."""
+        clip = VideoFileClip(videoPath)
+        clipDuration = int(clip.duration)
+        clip.close()
+        return random.randrange(0, clipDuration)
 
     @staticmethod
     def resizeImageForYouTubeShort(imagePath : str):
@@ -91,7 +101,8 @@ class VideoMethods:
 
     @staticmethod
     def createImageVideo(imagePath : str, duration : int):
-        """IMPORTANT:Image passed in must have even dimensions or the video made will be black!!!!"""
+        """Takes in a file path to the image file and then makes a video the length of the provided duration.IMPORTANT:
+        Image passed in must have even dimensions or the video made will be black!!!!"""
         if not os.path.exists("./video"):
             os.makedirs("./video")
         try:
