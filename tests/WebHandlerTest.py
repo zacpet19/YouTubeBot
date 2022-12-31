@@ -2,12 +2,12 @@ import sys
 import os   
 sys.path.append('..')
 
-from screenshotWebpage import ScreenShot
+from webHandler import WebHandler
 
 def invalidPathTest():
     errorThrown = False
     try:
-        ScreenShot("")
+        WebHandler("")
     except Exception:
         errorThrown = True
     
@@ -15,7 +15,7 @@ def invalidPathTest():
     print("Invalid Path Test Passed")
 
 def invalidUrlTest():
-    screenshot = ScreenShot("")
+    screenshot = WebHandler("a")
     errorThrown = False
     try:
         screenshot.takeScreenShot("https://google.com")
@@ -25,11 +25,10 @@ def invalidUrlTest():
     print("Invalid URL Test Passed")
 
 def screenshotTest():
-    screenshot = ScreenShot("")
-    screenshot.takeScreenShot("https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/")
+    screenshot = WebHandler("a")
+    screenshot.screenShotRedditPosts(["https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/", "https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/"])
     assert os.path.exists("./images")
     assert os.path.exists("./images/1.png")
-    screenshot.takeScreenShot("https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/")
     screenshot.closeDriver()
     assert os.path.exists("./images/2.png")
     os.remove("./images/2.png")
