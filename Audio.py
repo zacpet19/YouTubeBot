@@ -10,9 +10,9 @@ import shutil
 
 
 """Current known Audio issues: Text to speech says random punctuation and says things you cant see like if there is a 
-whole bunch of spaces(ie. hashx200b was said mutiple times in one."""
+whole bunch of spaces(ie. hashx200b was said multiple times in one. at the end of some videos there is a "brrt" sound"""
 
-class TextToSpeech:
+class AudioMethods:
     @staticmethod
     def textToSpeech(text, silencePath=""):
         """Takes in a 2d array of text (reddit post/comments and uses gTTP to turn it into a mp3 file and then saves it

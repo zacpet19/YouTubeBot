@@ -1,6 +1,6 @@
 import os
 from redditScraper import RedditScraper
-from TextToSpeech import TextToSpeech
+from Audio import AudioMethods
 from webHandler import WebHandler
 from moviepy.editor import AudioFileClip
 from Video import VideoMethods
@@ -40,9 +40,9 @@ def main():
         print("Reddit Scraped")
 
         #Create TTS .mp3 files with reddit posts
-        TextToSpeech.removeAudioFolder()
-        TextToSpeech.textToSpeech(comments, silencePath="permAudio/500milsil.mp3")
-        parsedTextToSpeech = TextToSpeech.parseTextToSpeechMP3s()
+        AudioMethods.removeAudioFolder()
+        AudioMethods.textToSpeech(comments, silencePath="permAudio/500milsil.mp3")
+        parsedTextToSpeech = AudioMethods.parseTextToSpeechMP3s()
         if len(parsedTextToSpeech) > 0:
             foundUsableRedditPosts = True
             
@@ -54,13 +54,13 @@ def main():
     screenShotter.closeDriver()
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
-    randomBackgroundMusic = TextToSpeech.getRandomFile("bndms")
-    TextToSpeech.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .2)
-    TextToSpeech.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
+    randomBackgroundMusic = AudioMethods.getRandomFile("bndms")
+    AudioMethods.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .2)
+    AudioMethods.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
     print("random background music created")
 
     #Merge TTS audio with background music 
-    TextToSpeech.mergeAudioFiles([parsedTextToSpeech[0], "audio/modMusic.mp3"])
+    AudioMethods.mergeAudioFiles([parsedTextToSpeech[0], "audio/modMusic.mp3"])
     print("Audio files merged")
 
 
@@ -69,7 +69,7 @@ def main():
     finalAudioDuration = int(finalAudio.duration)
     finalAudio.close()
     #Pull random video from bndvd directory and format it for youtube shorts
-    randomBackgroundVideo = TextToSpeech.getRandomFile("bndvd")
+    randomBackgroundVideo = AudioMethods.getRandomFile("bndvd")
     backgroundVideoStart = VideoMethods.getRandomPointInVideo(f"bndvd/{randomBackgroundVideo}")
     VideoMethods.formatBackgroundVideoForYoutubeShort(f"bndvd/{randomBackgroundVideo}", finalAudioDuration,
                                                       startCut=backgroundVideoStart)

@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append('..')
 
-from TextToSpeech import TextToSpeech
+from Audio import TextToSpeech
 
 def TexttoSpeechTest():
     comment = [["hello", "goodbye", "Hey there"], ["Hello, GoodBye", "Hey there"]]
