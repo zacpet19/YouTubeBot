@@ -28,8 +28,8 @@ class VideoMethods:
         if startCut > clip.duration:
             print("Error: startCut is greater than the length of the clip.")
         if startCut + duration < clip.duration:
-            cutClip = clip.subclip(startCut, duration)
-            cutClip.write_videofile("video/silentVideo.mp4", audio=False)
+            cutClip = clip.subclip(startCut, duration + startCut)
+            cutClip.write_videofile("video/silentVideo.mp4", fps=24, audio=False)
             cutClip.close()
         else:
             if startCut != 0:
@@ -37,14 +37,14 @@ class VideoMethods:
                 secondHalf = clip.subclip(startCut, clip.duration)
                 concat = concatenate_videoclips([secondHalf, firstHalf])
                 final = concat.fx(vfx.loop, duration=duration) #ignore IDE about no reference to loop method
-                final.write_videofile("video/silentVideo.mp4", audio=False)
+                final.write_videofile("video/silentVideo.mp4", fps=24, audio=False)
                 firstHalf.close()
                 secondHalf.close()
                 concat.close()
                 final.close()
             else:
                 loopedVideo = clip.fx(vfx.loop, duration=duration) #ignore IDE about no reference to loop method
-                loopedVideo.write_videofile("video/silentVideo.mp4", audio=False)
+                loopedVideo.write_videofile("video/silentVideo.mp4", fps=24, audio=False)
                 loopedVideo.close()
         clip.close()
 
@@ -157,3 +157,8 @@ class VideoMethods:
         final.write_videofile("video/finalVideo.mp4")
         videoClip.close()
         audioClip.close()
+
+"""clip = VideoFileClip("bndvd/Free To Use Gameplay (No Copyright) - Minecraft Parkour.mp4")
+sub = clip.subclip(100, 111)
+sub.write_videofile("test.mp4", audio=False, fps=24)
+clip.close()"""
