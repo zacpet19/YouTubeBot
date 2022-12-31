@@ -9,7 +9,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
 
-class ScreenShot:
+class WebHandler:
 
     def __init__(self, path):
         try:
@@ -20,7 +20,7 @@ class ScreenShot:
             self.driver.quit()
             raise e
 
-    def takeScreenShot(self, urls : [str]):
+    def screenShotRedditPosts(self, urls : list[str]):
         """function(url) -> None, saves screenshot in ./images directory"""
         self.driver.maximize_window()
         count = 1

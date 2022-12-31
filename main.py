@@ -1,7 +1,7 @@
 import os
 from redditScraper import RedditScraper
 from TextToSpeech import TextToSpeech
-from screenshotWebpage import ScreenShot
+from webHandler import WebHandler
 from moviepy.editor import AudioFileClip
 from Video import VideoMethods
 from dotenv import load_dotenv
@@ -49,8 +49,8 @@ def main():
     print("text to speech complete")
 
     #Take screenshots of reddit posts
-    screenShotter = ScreenShot("a")
-    screenShotter.takeScreenShot(urls)
+    screenShotter = WebHandler("a")
+    screenShotter.screenShotRedditPosts(urls)
     screenShotter.closeDriver()
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
@@ -101,7 +101,7 @@ def main():
     videoData = {"Title" : title, "Description" : description}
 
     #Upload video to youtube
-    youtubeUploader = ScreenShot("a")
+    youtubeUploader = WebHandler("a")
     youtubeUploader.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
     youtubeUploader.closeDriver()
     print("Video uploaded")
