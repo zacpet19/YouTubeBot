@@ -72,6 +72,7 @@ class RedditScraper:
         f = open("visitedRedditPages.txt", "a")
         for url in urlArray:
             f.write(url + "\n")
+            self.pastUrls.add(url)
         f.close()
 
         return (postInfo, urlArray)
