@@ -69,8 +69,6 @@ class RedditScraper:
             postInfo.append(tempList)
         print(postInfo)
         #Document visited urls to avoid duplicate
-        """TODO: do this earlier in the method as it does not work in main because it keeps pulling the same post even
-        if the post is not usable it keeps pulling the same one over and over again"""
         f = open("visitedRedditPages.txt", "a")
         for url in urlArray:
             f.write(url + "\n")
