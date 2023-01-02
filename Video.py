@@ -158,7 +158,3 @@ class VideoMethods:
         videoClip.close()
         audioClip.close()
 
-"""clip = VideoFileClip("bndvd/Free To Use Gameplay (No Copyright) - Minecraft Parkour.mp4")
-sub = clip.subclip(100, 111)
-sub.write_videofile("test.mp4", audio=False, fps=24)
-clip.close()"""
