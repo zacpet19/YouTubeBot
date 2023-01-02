@@ -4,12 +4,14 @@ from Audio import AudioMethods
 from webHandler import WebHandler
 from moviepy.editor import AudioFileClip
 from Video import VideoMethods
+from Logger import Logger
 from dotenv import load_dotenv
 import sys
 
 
 
 def main():
+    logger = Logger()
     # load environment variables
     load_dotenv()
     gmail = os.getenv('gmail')
@@ -22,22 +24,24 @@ def main():
     user_agent = os.getenv('user_agent')
     #Should check for missing environment variables here
 
+    logger.info("Environment Variables loaded")
     #declaring variables to store things found in the while loop
     foundUsableRedditPosts = False
     comments = ""
     urls = ""
     parsedTextToSpeech = ""
     count = 0
+    retries = 5
     reddit = RedditScraper(client_id, client_secret, user_agent)
     #loops until it is able to get a usable mp3 file from Reddit posts
     while not foundUsableRedditPosts:
-        if count > 20:
-            print("Error: Unable to find usable reddit posts.")
+        if count > retries:
+            logger.error("Unable to find usable reddit posts, shutting down")
             sys.exit()
         count += 1
         #Scrape reddit posts
         (comments, urls) = reddit.getTopPostComments("csmajors")
-        print("Reddit Scraped")
+        logger.info("Potential Reddit posts scraped")
 
         #Create TTS .mp3 files with reddit posts
         AudioMethods.removeAudioFolder()
@@ -45,8 +49,10 @@ def main():
         parsedTextToSpeech = AudioMethods.parseTextToSpeechMP3s()
         if len(parsedTextToSpeech) > 0:
             foundUsableRedditPosts = True
+        else:
+            logger.warn(f"Reddit posts not accepted, retrying {count}/{retries}...")
             
-    print("text to speech complete")
+    logger.info("Text to speech sucessfully created, moving on")
 
     #Take screenshots of reddit posts
     screenShotter = WebHandler("a")
@@ -57,11 +63,11 @@ def main():
     randomBackgroundMusic = AudioMethods.getRandomFile("bndms")
     AudioMethods.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .2)
     AudioMethods.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
-    print("random background music created")
+    logger.info("background music created")
 
     #Merge TTS audio with background music 
     AudioMethods.mergeAudioFiles([parsedTextToSpeech[0], "audio/modMusic.mp3"])
-    print("Audio files merged")
+    logger.info("Audio files merged")
 
 
     #Get duration of the merged .mp3 file
@@ -73,25 +79,25 @@ def main():
     backgroundVideoStart = VideoMethods.getRandomPointInVideo(f"bndvd/{randomBackgroundVideo}")
     VideoMethods.formatBackgroundVideoForYoutubeShort(f"bndvd/{randomBackgroundVideo}", finalAudioDuration,
                                                       startCut=backgroundVideoStart)
-    print("Background video formatted")
+    logger.info("Background video formatted")
 
     #Resize post screenshot to fit youtube shorts
     (imageWidth, _imageHeight) = VideoMethods.resizeImageForYouTubeShort(f"images/{parsedTextToSpeech[0][6:7]}.png")
-    print("Image resized")
+    logger.info("Image resized")
 
     # Turns post image into .mp4 file 
     VideoMethods.createImageVideo("images/reSizedImage.png", finalAudioDuration)
-    print("Image video created")
+    logger.info("Image video created")
 
     #Merge background video with post video
     #YouTube shorts are 1080 pixels wide
     newYPos = (1080 - imageWidth) / 2
     VideoMethods.combineVideoClips("video/silentVideo.mp4", "video/imageVideo.mp4", xPosition=65, yPosition=newYPos)
-    print("Final Video made")
+    logger.info("Final Video made")
 
     #Combine merged audio file with merged video file
     VideoMethods.setVideoClipAudio("video/combinedVideo.mp4", "audio/finalAudio.mp3")
-    print("Final video given Audio")
+    logger.info("Final video given Audio")
 
     #Pull title and description from comments
     title = comments[int(parsedTextToSpeech[0][6:7]) - 1][0]
@@ -104,7 +110,7 @@ def main():
     youtubeUploader = WebHandler("a")
     youtubeUploader.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
     youtubeUploader.closeDriver()
-    print("Video uploaded")
+    logger.info("Video uploaded")
 
 
 if __name__ == '__main__':
