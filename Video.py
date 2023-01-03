@@ -10,6 +10,7 @@ import random
 
 
 class VideoMethods:
+    """VideoMethods class is methods for general Video file manipulation/creation for use in YouTube videos."""
     @staticmethod
     def formatBackgroundVideoForYoutubeShort(videoPath : str, duration : int, startCut=0):
         """Takes in a filepath to a mp4 file and then makes it the input duration. If the video is longer than the
