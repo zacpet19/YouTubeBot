@@ -13,6 +13,7 @@ import shutil
 whole bunch of spaces(ie. hashx200b was said multiple times in one. at the end of some videos there is a "brrt" sound"""
 
 class AudioMethods:
+    """AudioMethods class is methods for general audio file manipulation/creation for use in YouTube videos."""
     @staticmethod
     def textToSpeech(text, silencePath=""):
         """Takes in a 2d array of text (reddit post/comments and uses gTTP to turn it into a mp3 file and then saves it
@@ -71,7 +72,7 @@ class AudioMethods:
     @staticmethod
     def parseTextToSpeechMP3s():
         """Parses the text to speech mp3 files by making sure they are not too short to long. Returns a list of the
-        file names that match the given criteria."""
+        file names that match the given criteria. Notably will return an empty list if no suitable files are found."""
         if not os.path.exists("./audio"):
             return []
         count = 1
@@ -87,7 +88,8 @@ class AudioMethods:
 
     @staticmethod
     def removeAudioFolder():
-        """Removes the audio folder and all subdirectories. Does nothing if audio folder doesn't exist"""
+        """Removes the audio folder and all subdirectories. Does nothing if audio folder doesn't exist. Many methods of
+        this class will create a folder named audio in the CWD."""
         if os.path.exists("./audio"):
             #Be careful messing around with this as it removes entire directories
             shutil.rmtree("audio")
@@ -106,6 +108,7 @@ class AudioMethods:
         except Exception as e:
             print("Error: Failed to find one or more of provided files.")
             return False
+        #the audio being changed is looped if it is not longer than the other clip
         if clip.duration < clipToChange.duration:
             clipToChangeSubclip = clipToChange.subclip(0, clip.duration - 1)
             clipToChangeSubclip.write_audiofile("audio/modMusic.mp3")
@@ -121,7 +124,7 @@ class AudioMethods:
     def mergeAudioFiles(clipsToMerge : list):
         """Takes in a list of audio clip objects and then merges them all together and saves the new clip into memory.
         They will all start at the same time so if they vary in length the longest one will continue to play to
-         completion after the others have stopped"""
+        completion after the others have stopped"""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         if len(clipsToMerge) <= 1:
@@ -144,7 +147,7 @@ class AudioMethods:
     def randomAudioCutout(clipToCutPath : str, duration : int):
         """This method takes in a filepath to and mp3 and a duration you want the new clip to be. Then it randomly
         creates a subclip of the provided duration and then saves it into memory. It will return false if given
-        bad parameters."""
+        unusable parameters."""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         if duration == 0:

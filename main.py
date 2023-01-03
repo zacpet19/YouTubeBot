@@ -40,7 +40,7 @@ def main():
             sys.exit()
         count += 1
         #Scrape reddit posts
-        (comments, urls) = reddit.getTopPostComments("csmajors")
+        (comments, urls) = reddit.getTopPostAndComments("csmajors")
         logger.info("Potential Reddit posts scraped")
 
         #Create TTS .mp3 files with reddit posts
@@ -55,7 +55,7 @@ def main():
     logger.info("Text to speech sucessfully created, moving on")
 
     #Take screenshots of reddit posts
-    screenShotter = WebHandler("a")
+    screenShotter = WebHandler("a") #finds the driver no matter the given parameter
     screenShotter.screenShotRedditPosts(urls)
     screenShotter.closeDriver()
 
@@ -107,7 +107,7 @@ def main():
     videoData = {"Title" : title, "Description" : description}
 
     #Upload video to youtube
-    youtubeUploader = WebHandler("a")
+    youtubeUploader = WebHandler("a") #finds the driver no matter the given parameter
     youtubeUploader.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
     youtubeUploader.closeDriver()
     logger.info("Video uploaded")

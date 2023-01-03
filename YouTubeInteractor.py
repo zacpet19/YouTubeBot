@@ -10,16 +10,11 @@ request = youtube.youtube.channels().list(part='statistics', forUsername='schafe
 print(request)"""
 
 class YouTubeAPIClient:
-    """this is not really going to be used with our current plans but may be worth keeping around for youtube analystics
-    dat or something"""
+    """this is not really going to be used with our current plans but may be worth keeping around for YouTube data
+     analytics or something"""
     def __init__(self, youtubeAPIKey : str):
         try:
             self.youtube = build('youtube', 'v3', developerKey=youtubeAPIKey)
         except Exception as e:
             print("Error: Invalid API key given or unable to connect to client")
             raise e
-
-
-
-
-

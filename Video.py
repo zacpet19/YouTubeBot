@@ -62,7 +62,7 @@ class VideoMethods:
         """This method is a general resizing method for images that will make its dimensions even because MoviePy
         only can make image videos of images with even dimensions. It also makes the image a bit bigger. The image
         should be resized before video creation to help keep the quality of the image. It also returns the new height
-        and width to help with formating the video"""
+        and width to help with formatting the video"""
         if not os.path.exists("./images"):
             os.makedirs("./images")
         try:
@@ -115,6 +115,8 @@ class VideoMethods:
 
     @staticmethod
     def resizeVideoClip(clipPath : str, height : int, width : int):
+        """Takes in a path to a video clip and parameters for the resolution for it to be resized into. Then it saves
+        it into the "video" directory."""
         if not os.path.exists("./video"):
             os.makedirs("./video")
         try:
@@ -127,6 +129,8 @@ class VideoMethods:
 
     @staticmethod
     def combineVideoClips(*filePaths : str, xPosition=0, yPosition=0):
+        """Combines all video clips provided. xPosition and yPostion allow you to chose the position which the second
+        video will be places over the first video."""
         if not os.path.exists("./video"):
             os.makedirs("./video")
         clips = []
@@ -145,6 +149,8 @@ class VideoMethods:
 
     @staticmethod
     def setVideoClipAudio(videoClipPath : str, audioClipPath : str):
+        """Takes in a filepath to a mp4 file and a mp3 file. Then sets the mp3 file as the audio of the mp4 and saves
+        it to the "video" directory."""
         if not os.path.exists("./video"):
             os.makedirs("./video")
         try:
@@ -157,4 +163,3 @@ class VideoMethods:
         final.write_videofile("video/finalVideo.mp4")
         videoClip.close()
         audioClip.close()
-

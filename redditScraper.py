@@ -4,7 +4,10 @@ import praw
 
 
 class RedditScraper:
+    """The RedditScraper class contains methods for scraping reddit to get posts and comments and parsing through them.
+    As of now it is not very general use and th parsers have limited functionality."""
     def __init__(self,client_id,client_secret, user_agent):
+        """Constructor for object that allows interaction with Reddit."""
         self.reddit = praw.Reddit(client_id=client_id,client_secret=client_secret,user_agent=user_agent)
         self.shouldCensor = False
         self.pastUrls = set()
@@ -25,12 +28,12 @@ class RedditScraper:
 
         
 
-    def getTopPostComments(self, subreddit : str, numberOfPosts=1, depth=20) -> tuple[list[list[str]], list[str]]:
+    def getTopPostAndComments(self, subreddit : str, numberOfPosts=1, depth=20) -> tuple[list[list[str]], list[str]]:
         """getTopPostComments takes in a name of a subreddit and then returns a tuple that contains a 2d array of posts
         and comments as well as a list of urls. The number of posts parameter decides how many posts from reddit to
         pull. The depth parameter decides how many posts deep to go into hot posts before abandoning the scrape."""
         #postInfo will be a 2d array that will have posts at each index and the posts will have the post title at the
-        #0th index, post body at the 1st, and post contents for whats remaining
+        #0th index, post body at the 1st, and post contents for remaining indexes
         postInfo = []
         urlArray = []
         if numberOfPosts < 1:
@@ -79,7 +82,11 @@ class RedditScraper:
 
 
     def parseComments(self,comment : str) -> str:
-        """TODO: Not currently censoring all the bad words. Parse out URLS"""
+        """parseComments method goes through scraped comments and censored out words based on provided
+        bannedWordList.txt. If the comment is too long it returns the string "error" because the comment is too long
+        to use."""
+        """TODO: Not currently censoring all the bad words. Parse out URLS and other things you dont want to be read by
+        text to speech"""
         if(len(comment) > 1000):
             return "error"
         if not self.shouldCensor:
@@ -93,7 +100,11 @@ class RedditScraper:
 
 
     def parsePostBody(self,body : str) -> str:
-        """TODO: Not currently censoring all the bad words. Parse out URLS"""
+        """parseComments method goes through scraped post body and censored out words based on provided
+           bannedWordList.txt. If the post body is too long it returns the string "error" because the comment is too
+           long to use."""
+        """TODO: Not currently censoring all the bad words. Parse out URLS and other things you dont want to be read by
+        text to speech"""
         if(len(body) > 2500):
             return "error"
         if not self.shouldCensor:
