@@ -18,6 +18,7 @@ Known bugs:
 Cannot screen shot Reddit post if it is on an 18+ page
 Some audio clips after combining will have "brrt" sound at the end
 YouTube will occasionally require 2-factor authentication even when disabled causeing upload process to fail
+Fails to log into gmail whe faces with anti-bot countermeasures
 
 TODO:
 Access subreddit names from a .txt file
@@ -25,10 +26,12 @@ Bypass 18+ page on Reddit for screenshot
 Change Reddit scraper return structure
 Add second passthrough of docstrings
 implement logger into classes
-Write tests for new texttospeech methods
+Write tests for new text to speech methods
 write tests for new video methods
 Implement better censorship method
 Benchmark censorship methods
 switch to headless chrome?
 Add screenshots for comments to video
-use selenium to add tags to youtube shorts
+Use selenium to add tags to youtube shorts
+Implement proxy rotation to avoid google CAPTCHA
+Test log out of gmail account after video upload

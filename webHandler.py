@@ -134,9 +134,11 @@ class WebHandler:
                 break
             except Exception as e:
                 print("Couldn't locate provided element or page took too long to load")
-                raise e
+                if attempts >= 5:
+                    raise e
         #video frequently takes a bit to upload so it pauses for 10 seconds no matter what might need to be longer for
         #bad connections and larger videos
+        #TODO find a way to not do a set wait time
         action.pause(10)
         #typing Youtube video title
         action.send_keys(videoInfo["Title"]).perform()
@@ -178,8 +180,26 @@ class WebHandler:
         #completes upload of video
         elementToMoveTo = self.driver.find_element(By.ID, "done-button")
         action.click(elementToMoveTo).perform()
+        #gets out of post video upload box
+        # signing out of the gmail account after a video upload
+        attempts = 0
+        while attempts < 5:
+            try:
+                action.send_keys(enter).perform()
+                elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, "avatar-btn")))
+                action.click(elementToMoveTo).perform()
+                elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, "contentWrapper")))
+                break
+            except Exception as e:
+                print("Unable to find element sign out failed.")
+                if attempts >= 5:
+                    raise e
+            attempts += 1
+        action.move_to_element(elementToMoveTo).perform()
+        action.click().perform()
         action.pause(20).perform()
 
     def closeDriver(self):
         """Closes the selenium web driver."""
         self.driver.quit()
+
