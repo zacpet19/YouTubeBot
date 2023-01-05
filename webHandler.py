@@ -183,19 +183,33 @@ class WebHandler:
         #gets out of post video upload box
         # signing out of the gmail account after a video upload
         attempts = 0
+        #Clicking past post video upload box
         while attempts < 5:
+            attempts += 1
             try:
-                action.send_keys(enter).perform()
-                elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, "avatar-btn")))
-                action.click(elementToMoveTo).perform()
-                elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, "contentWrapper")))
+                elementToMoveTo = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "ytcp-button[id='close-button'] div[class='label style-scope ytcp-button']")))
+                action.move_to_element(elementToMoveTo).perform()
                 break
             except Exception as e:
                 print("Unable to find element sign out failed.")
                 if attempts >= 5:
                     raise e
-            attempts += 1
+        action.click().perform()
+        #clicking on account icon
+        try:
+            elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, "avatar-btn")))
+        except Exception as e:
+            print("Unable to find element sign out failed.")
+            raise e
+        action.click(elementToMoveTo).perform()
+        #clicking sign out button
+        try:
+            elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, "contentWrapper")))
+        except Exception as e:
+            print("Unable to find element sign out failed.")
+            raise e
         action.move_to_element(elementToMoveTo).perform()
+        action.move_by_offset(0, 30).perform()
         action.click().perform()
         action.pause(20).perform()
 
