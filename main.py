@@ -1,10 +1,10 @@
 import os
-from redditScraper import RedditScraper
-from Audio import AudioMethods
-from webHandler import WebHandler
+from src.redditScraper import RedditScraper
+from src.Audio import AudioMethods
+from src.webHandler import WebHandler
 from moviepy.editor import AudioFileClip
-from Video import VideoMethods
-from Logger import Logger
+from src.Video import VideoMethods
+from src.Logger import Logger
 from dotenv import load_dotenv
 import sys
 
