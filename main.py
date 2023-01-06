@@ -29,7 +29,9 @@ def main():
     foundUsableRedditPosts = False
     comments = ""
     urls = ""
-    commentIds = ""
+    commentIdsPulled = ""
+    #comments used will be a list of integers for the comments used in the mp3 of each post
+    numberOfCommentsUsed = ""
     parsedTextToSpeech = ""
     count = 0
     retries = 5
@@ -41,7 +43,7 @@ def main():
             sys.exit()
         count += 1
         #Scrape reddit posts
-        (comments, urls, commentIds) = reddit.getTopPostAndComments("csmajors")
+        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("csmajors")
         commentsForGTTS = []
         for i in comments:
             temp = []
@@ -52,18 +54,26 @@ def main():
 
         #Create gTTS .mp3 files with reddit posts
         AudioMethods.removeAudioFolder()
-        AudioMethods.textToSpeech(commentsForGTTS, silencePath="permAudio/500milsil.mp3")
+        numberOfCommentsUsed = AudioMethods.textToSpeech(commentsForGTTS, silencePath="permAudio/500milsil.mp3")
         parsedTextToSpeech = AudioMethods.parseTextToSpeechMP3s()
         if len(parsedTextToSpeech) > 0:
             foundUsableRedditPosts = True
         else:
             logger.warn(f"Reddit posts not accepted, retrying {count}/{retries}...")
-            
+
     logger.info("Text to speech sucessfully created, moving on")
 
+    #gets the comment ids only of the comments that are used to make the mp3
+    commentIdsUsed = []
+    for num in numberOfCommentsUsed:
+        count = 1
+        while count <= num:
+            commentIdsUsed.append(commentIdsPulled[f"comment{count}"])
+            count += 1
+
     #Take screenshots of reddit posts
-    screenShotter = WebHandler("a") #finds the driver no matter the given parameter
-    screenShotter.screenShotReddit(urls)
+    screenShotter = WebHandler("a") #finds the driver no matter the given string
+    screenShotter.screenShotReddit(urls, commentIds=commentIdsUsed)
     screenShotter.closeDriver()
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file

@@ -19,7 +19,8 @@ class AudioMethods:
         """Takes in a 2d array of text (reddit post/comments and uses gTTP to turn it into a mp3 file and then saves it
         into memory while keeping it under a minute long. The silence path is a variable that takes in the file path to
         a silence audioClip if you would like to have pauses between comments and posts. You could add any other mp3
-        files between them as well."""
+        files between them as well. Returns an array of the number of comments used to make each mp3. The order of the
+         returned array is in the same order the posts were given."""
         if not os.path.exists("./audio"):
             os.makedirs("./audio")
         count = 1
@@ -33,6 +34,7 @@ class AudioMethods:
                 raise e
             inBetweenAudioDuration = inBetweenAudio.duration
             inBetweenAudio.close()
+        commentsUsed = []
         for i in text:
             if not os.path.exists(f"./audio/post{count}"):
                 os.makedirs(f"./audio/post{count}")
@@ -53,10 +55,15 @@ class AudioMethods:
                 innerCount += 1
             if innerCount > 2:
                 audioFiles = os.listdir(f"./audio/post{count}")
-                audioFiles.pop()
+                #removes last audio file created because it would make the clip go over 60 seconds
+                if duration >= 60:
+                    audioFiles.pop()
+                #subtracts 2 to account for post title and body
+                commentsUsed.append(len(audioFiles) - 2)
                 clips = []
                 for c in audioFiles:
                     clips.append(AudioFileClip(f"./audio/post{count}/{c}"))
+                    #adds the audio clip you want played in between comments/posts
                     if silencePath != "" and c != audioFiles[-1]:
                         clips.append(AudioFileClip(silencePath))
                 finalClip = concatenate_audioclips(clips)
@@ -68,6 +75,7 @@ class AudioMethods:
             #Be careful messing with this because it removes an entire directory and all things below it
             shutil.rmtree(f"audio/post{count}")
             count += 1
+        return commentsUsed
 
     @staticmethod
     def parseTextToSpeechMP3s():

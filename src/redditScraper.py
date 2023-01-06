@@ -37,12 +37,15 @@ class RedditScraper:
 
     def getTopPostAndComments(self, subreddit : str, numberOfPosts=1, depth=20) -> tuple[list[list[str]], list[str], dict]:
         """getTopPostComments takes in a name of a subreddit and then returns a tuple that contains a 2d array of posts
-        and comments as well as a list of urls. The number of posts parameter decides how many posts from reddit to
-        pull. The depth parameter decides how many posts deep to go into hot posts before abandoning the scrape."""
+        and comments,a list of urls, and dictionary containing comment IDS. The number of posts parameter decides how
+        many posts from reddit to pull. The depth parameter decides how many posts deep to go into hot posts before
+        abandoning the scrape."""
         #postInfo will be a 2d array that will have posts at each index and the posts will have the post title at the
         #0th index, post body at the 1st, and post contents for remaining indexes
         postInfo = []
         urlArray = []
+        #commentDict contains the post ids as they are pulled from Praw. The format they are stored is as follows:
+        #{"comment{commentNumber}" : "{commentId}", ...} where both the key and index are strings
         commentDict = {}
         if numberOfPosts < 1:
             print("Number of Posts must be greater than 1.")

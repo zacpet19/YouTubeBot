@@ -46,7 +46,7 @@ class WebHandler:
             im.save(f"./images/{count}.png")
             count += 1
         #screenshotting comments
-        if type(commentIds) is list:
+        if type(commentIds) is list and len(commentIds) > 0:
             count = 0
             for c in commentIds:
                 count += 1

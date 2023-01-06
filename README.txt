@@ -17,8 +17,8 @@ is limited and has bugs that make it occasionally not work as intended.
 Known bugs:
 Cannot screen shot Reddit post if it is on an 18+ page
 Some audio clips after combining will have "brrt" sound at the end
-YouTube will occasionally require 2-factor authentication even when disabled causeing upload process to fail
-Fails to log into gmail whe faces with anti-bot countermeasures
+YouTube will occasionally require 2-factor authentication even when disabled causing upload process to fail
+Fails to log into gmail when faced with anti-bot countermeasures
 
 TODO:
 Access subreddit names from a .txt file
@@ -34,4 +34,5 @@ switch to headless chrome?
 Add screenshots for comments to video
 Use selenium to add tags to youtube shorts
 Implement proxy rotation to avoid google CAPTCHA
+Make method that changes audio pitch
 
