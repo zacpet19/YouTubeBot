@@ -21,8 +21,12 @@ class WebHandler:
             self.driver.quit()
             raise e
 
-    def screenShotRedditPosts(self, urls : list[str]):
-        """function(url) -> None, saves screenshot in ./images directory"""
+    def screenShotReddit(self, urls : list[str], commentIds=None):
+        """function(url) -> None, saves screenshot in ./images directory. commentIds gives the option to screenshot
+        Reddit comments given their IDS as they are pulled by the Praw Reddit API. commentIds should be given as a list
+        of Ids."""
+        if not os.path.exists("./images"):
+            os.makedirs("./images")
         self.driver.maximize_window()
         count = 1
         for url in urls:
@@ -39,10 +43,24 @@ class WebHandler:
             image = element.screenshot_as_png
             imageStream = io.BytesIO(image)
             im = Image.open(imageStream)
-            if not os.path.exists("./images"):
-                os.makedirs("./images")
             im.save(f"./images/{count}.png")
             count += 1
+        #screenshotting comments
+        if type(commentIds) is list:
+            count = 0
+            for c in commentIds:
+                count += 1
+                try:
+                    #Praw doesnt pull entire comment ID but they all start with t1_
+                    element = self.driver.find_element(By.ID, "t1_" + c)
+                except Exception as e:
+                    element = None
+                    print(f"ERROR: Comment #{count} ID not found")
+                if element is not None:
+                    image = element.screenshot_as_png
+                    imageStream = io.BytesIO(image)
+                    im = Image.open(imageStream)
+                    im.save(f"./images/comment{count}.png")
 
     def uploadYoutubeVideo(self, channel : str, username : str, password : str, filepath : str, videoInfo : dict):
         """this method takes in a url to a channel, a gmail username/password, a filepath to the mp4 you would like

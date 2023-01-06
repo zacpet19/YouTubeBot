@@ -62,7 +62,7 @@ def main():
 
     #Take screenshots of reddit posts
     screenShotter = WebHandler("a") #finds the driver no matter the given parameter
-    screenShotter.screenShotRedditPosts(urls)
+    screenShotter.screenShotReddit(urls)
     screenShotter.closeDriver()
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
