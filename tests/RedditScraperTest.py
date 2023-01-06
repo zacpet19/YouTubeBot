@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import sys
 sys.path.append('..')
-from redditScraper import RedditScraper
+from src.redditScraper import RedditScraper
 
 
 def getTopPostCommentsTest():

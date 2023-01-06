@@ -2,7 +2,7 @@ import sys
 import os   
 sys.path.append('..')
 
-from webHandler import WebHandler
+from src.webHandler import WebHandler
 
 def invalidPathTest():
     errorThrown = False
