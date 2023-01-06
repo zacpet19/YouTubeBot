@@ -67,6 +67,7 @@ def main():
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
     randomBackgroundMusic = AudioMethods.getRandomFile("bndms")
+    logger.info("Background music used was " + randomBackgroundMusic)
     AudioMethods.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .2)
     AudioMethods.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
     logger.info("background music created")

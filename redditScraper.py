@@ -133,21 +133,23 @@ class RedditScraper:
             return words
         f = open("parseIgnore.txt")
         lines = f.readlines()
-        splitWords = list(words.split(" "))
+        splitWords = words.split(" ")
         finalWordList = []
         basicPunctuation = [".", "!", "?"]
         for word in splitWords:
             contains = False
             for line in lines:
                 line = line.replace("\n", "")
-                if word.__contains__(line) is True:
+                if line in word:
                     contains = True
-                    # Moves punctuation to the new end of sentence
-                    for punc in basicPunctuation:
-                        if word.__contains__(punc):
-                            finalWordList[-1] += punc
-            if contains is False:
+
+            if not contains:
                 finalWordList.append(word)
+            else:
+                # Moves punctuation to the new end of sentence
+                for punc in basicPunctuation:
+                    if punc in word:
+                        finalWordList[-1] += punc
         f.close()
         stringBuilder = ""
         for word in finalWordList:
