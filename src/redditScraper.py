@@ -46,7 +46,7 @@ class RedditScraper:
         commentDict = {}
         if numberOfPosts < 1:
             print("Number of Posts must be greater than 1.")
-            return (postInfo, urlArray)
+            return (postInfo, urlArray, commentDict)
         for post in self.reddit.subreddit(subreddit).hot(limit=depth):
             if(len(postInfo) >= numberOfPosts):
                 break
@@ -86,7 +86,6 @@ class RedditScraper:
             f.write(url + "\n")
             self.pastUrls.add(url)
         f.close()
-        print(commentDict)
         return (postInfo, urlArray, commentDict)
 
 

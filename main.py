@@ -29,6 +29,7 @@ def main():
     foundUsableRedditPosts = False
     comments = ""
     urls = ""
+    commentIds = ""
     parsedTextToSpeech = ""
     count = 0
     retries = 5
@@ -40,7 +41,7 @@ def main():
             sys.exit()
         count += 1
         #Scrape reddit posts
-        (comments, urls) = reddit.getTopPostAndComments("csmajors")
+        (comments, urls, commentIds) = reddit.getTopPostAndComments("csmajors")
         commentsForGTTS = []
         for i in comments:
             temp = []
