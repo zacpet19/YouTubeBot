@@ -10,6 +10,7 @@ class RedditScraper:
         """Constructor for object that allows interaction with Reddit."""
         self.reddit = praw.Reddit(client_id=client_id,client_secret=client_secret,user_agent=user_agent)
         self.shouldCensor = False
+        self.shouldIgnore = False
         self.pastUrls = set()
         try:
             f = open("visitedRedditPages.txt", "r")
@@ -25,6 +26,12 @@ class RedditScraper:
             self.shouldCensor = True
         except Exception:
             print("Failed to open bannedWordList.txt, reddit text will not be censored")
+        try:
+            f = open("parseIgnore.txt", "r")
+            f.close()
+            self.shouldIgnore = True
+        except Exception:
+            print("Failed to open parseIgnore.txt reddit text will be read as it is pulled")
 
         
 
@@ -94,6 +101,7 @@ class RedditScraper:
         f = open("bannedWordList.txt","r")
         lines = f.readlines()
         for line in lines:
+            line = line.replace("\n", "")
             comment = comment.replace(line,"*" * len(line))
         f.close()
         return comment
@@ -112,10 +120,38 @@ class RedditScraper:
         f = open("bannedWordList.txt", "r")
         lines = f.readlines()
         for line in lines:
+            line = line.replace("\n", "")
             body = body.replace(line, "*" * len(line))
         f.close()
         return body
 
-
-
+    def ignoreWords(self, words : str) -> str:
+        """Takes in a string and then tokenizes it. If any of the tokens match with what is in the parseIgnore file it
+        removes the token. Returns a string of without the removed words. This method was made with addidtional string
+        parsing before giving it to gTTS."""
+        if not self.shouldIgnore:
+            return words
+        f = open("parseIgnore.txt")
+        lines = f.readlines()
+        splitWords = list(words.split(" "))
+        finalWordList = []
+        basicPunctuation = [".", "!", "?"]
+        for word in splitWords:
+            contains = False
+            for line in lines:
+                line = line.replace("\n", "")
+                if word.__contains__(line) is True:
+                    contains = True
+                    # Moves punctuation to the new end of sentence
+                    for punc in basicPunctuation:
+                        if word.__contains__(punc):
+                            finalWordList[-1] += punc
+            if contains is False:
+                finalWordList.append(word)
+        f.close()
+        stringBuilder = ""
+        for word in finalWordList:
+            stringBuilder += f"{word} "
+        #removes space at the end
+        return stringBuilder[:len(stringBuilder) - 1]
 

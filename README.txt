@@ -34,4 +34,4 @@ switch to headless chrome?
 Add screenshots for comments to video
 Use selenium to add tags to youtube shorts
 Implement proxy rotation to avoid google CAPTCHA
-Test log out of gmail account after video upload
+

@@ -41,11 +41,17 @@ def main():
         count += 1
         #Scrape reddit posts
         (comments, urls) = reddit.getTopPostAndComments("csmajors")
+        commentsForGTTS = []
+        for i in comments:
+            temp = []
+            for j in i:
+                temp.append(reddit.ignoreWords(j))
+            commentsForGTTS.append(temp)
         logger.info("Potential Reddit posts scraped")
 
-        #Create TTS .mp3 files with reddit posts
+        #Create gTTS .mp3 files with reddit posts
         AudioMethods.removeAudioFolder()
-        AudioMethods.textToSpeech(comments, silencePath="permAudio/500milsil.mp3")
+        AudioMethods.textToSpeech(commentsForGTTS, silencePath="permAudio/500milsil.mp3")
         parsedTextToSpeech = AudioMethods.parseTextToSpeechMP3s()
         if len(parsedTextToSpeech) > 0:
             foundUsableRedditPosts = True
@@ -107,7 +113,7 @@ def main():
     videoData = {"Title" : title, "Description" : description}
 
     #Upload video to youtube
-    youtubeUploader = WebHandler("a") #finds the driver no matter the given parameter
+    youtubeUploader = WebHandler("a") #finds the driver no matter the given string
     youtubeUploader.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
     youtubeUploader.closeDriver()
     logger.info("Video uploaded")
