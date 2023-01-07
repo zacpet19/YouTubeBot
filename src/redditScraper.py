@@ -58,13 +58,14 @@ class RedditScraper:
                 continue
             if (post.url in self.pastUrls):
                 continue
+            parsedTitle = self.parsePostBody(post.title)
             parsedBody = self.parsePostBody(post.selftext)
             #If body is too long we move to next post
             if(parsedBody == "error"):
                 continue
             tempList = []
             post.comments.replace_more(limit=0)
-            tempList.append(post.title)
+            tempList.append(parsedTitle)
             tempList.append(parsedBody)
             urlArray.append(post.url)
             count = 0
@@ -149,7 +150,8 @@ class RedditScraper:
                 # Moves punctuation to the new end of sentence
                 for punc in basicPunctuation:
                     if punc in word:
-                        finalWordList[len(finalWordList) - 1] += punc
+                        if len(finalWordList) > 0:
+                            finalWordList[len(finalWordList) - 1] += punc
         f.close()
         stringBuilder = ""
         for word in finalWordList:

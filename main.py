@@ -43,7 +43,7 @@ def main():
             sys.exit()
         count += 1
         #Scrape reddit posts
-        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("csmajors")
+        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("amItheasshole")
         commentsForGTTS = []
         for i in comments:
             temp = []
