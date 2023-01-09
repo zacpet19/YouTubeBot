@@ -5,3 +5,12 @@ bannedWordList.txt
 logs.txt
 audio
 images
+video
+.idea
+bndms
+visitedRedditPages.txt
+bndvd
+permAudio
+subreddits.txt
+TestMain.py
+parseIgnore.txt

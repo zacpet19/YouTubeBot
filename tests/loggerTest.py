@@ -1,7 +1,7 @@
 import sys
 sys.path.append('..')
 
-from Logger import Logger
+from src.Logger import Logger
 
 def loggerTest():
     logger = Logger()
