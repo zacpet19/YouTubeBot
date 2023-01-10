@@ -26,7 +26,7 @@ def invalidUrlTest():
 
 def screenshotTest():
     screenshot = WebHandler("a")
-    screenshot.screenShotRedditPosts(["https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/", "https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/"])
+    screenshot.screenShotReddit(["https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/", "https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/"])
     assert os.path.exists("./images")
     assert os.path.exists("./images/1.png")
     screenshot.closeDriver()

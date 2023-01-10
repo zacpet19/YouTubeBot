@@ -15,7 +15,10 @@ class WebHandler:
         """Creates an object with the Selenium chrome driver. Takes in the file path to the chrome driver."""
         try:
             ser = Service(path)
-            self.driver = webdriver.Chrome(service=ser, options=webdriver.ChromeOptions())
+            options = webdriver.ChromeOptions()
+            #Comment this out for debugging
+            options.headless = True
+            self.driver = webdriver.Chrome(service=ser, options=options)
         except Exception as e:
             print("Error: Incorrect path to Chrome Driver.")
             self.driver.quit()
