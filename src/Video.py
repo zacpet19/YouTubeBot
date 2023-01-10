@@ -164,8 +164,9 @@ class VideoMethods:
 
     @staticmethod
     def deleteImageVideoFolder():
-        if not os.path.exists("./video/imageVideo"):
-            shutil.rmtree(f"video/imageVideo")
+        if os.path.exists("C:/Users/zachp/PycharmProjects/Test/video/imageVideo"):
+            shutil.rmtree("C:/Users/zachp/PycharmProjects/Test/video/imageVideo")
+
 
     @staticmethod
     def resizeVideoClip(clipPath : str, height : int, width : int):

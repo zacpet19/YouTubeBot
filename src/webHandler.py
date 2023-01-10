@@ -16,8 +16,8 @@ class WebHandler:
         self.ser = Service(path)
         self.options = webdriver.ChromeOptions()
         #Comment this out for debugging
-        self.options.headless = True
-        self.driver = None 
+        # self.options.headless = True
+        # self.driver = None
 
     def screenShotReddit(self, urls : list[str], commentIds=None):
         """function(url) -> None, saves screenshot in ./images directory. commentIds gives the option to screenshot
