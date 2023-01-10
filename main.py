@@ -47,17 +47,11 @@ def main():
         count += 1
         #Scrape reddit posts
         (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("csmajors")
-        commentsForGTTS = []
-        for i in comments:
-            temp = []
-            for j in i:
-                temp.append(reddit.ignoreWords(j))
-            commentsForGTTS.append(temp)
         logger.info("Potential Reddit posts scraped")
 
         #Create gTTS .mp3 files with reddit posts
         AudioMethods.removeAudioFolder()
-        (numberOfCommentsUsed, audioLengths, postBody) = AudioMethods.textToSpeech(commentsForGTTS,
+        (numberOfCommentsUsed, audioLengths, postBody) = AudioMethods.textToSpeech(comments,
                                                                                    silencePath="permAudio/500milsil.mp3")
         parsedTextToSpeech = AudioMethods.parseTextToSpeechMP3s()
         if len(parsedTextToSpeech) > 0:
@@ -68,20 +62,16 @@ def main():
     logger.info("Text to speech sucessfully created, moving on")
 
     #gets the comment ids only of the comments that are used to make the mp3
-    commentIdsUsed = []
-    count = 1
-    while count <= numberOfCommentsUsed:
-        commentIdsUsed.append(commentIdsPulled[f"comment{count}"])
-        count += 1
+    commentIdsUsed = commentIdsPulled[:numberOfCommentsUsed]
 
     #Take screenshots of reddit posts
     screenShotter = WebHandler("a") #finds the driver no matter the given string
     screenShotter.screenShotReddit(urls, commentIds=commentIdsUsed)
-    screenShotter.closeDriver()
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
     randomBackgroundMusic = AudioMethods.getRandomFile("bndms")
     logger.info("Background music used was " + randomBackgroundMusic)
+
     AudioMethods.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .2)
     AudioMethods.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
     logger.info("background music created")
@@ -105,17 +95,20 @@ def main():
     #Resize post screenshot(s) to fit youtube shorts
     #list of resized image widths
     imageWidths = []
+
+    #Grabs filenumber from string
+    fileNumber = int(parsedTextToSpeech[0][6:7])
     #resizing main post images
-    (imageWidth, _imageHeight) = VideoMethods.resizeImageForYouTubeShort(f"images/{parsedTextToSpeech[0][6:7]}.png")
+    (imageWidth, _imageHeight) = VideoMethods.resizeImageForYouTubeShort(f"images/{fileNumber}.png")
     imageWidths.append(imageWidth)
     #list of relative filepaths to the images being turned into videos
-    imagePaths = [f"images/{parsedTextToSpeech[0][6:7]}.png"]
-    count = 1
-    while count <= numberOfCommentsUsed:
+    imagePaths = [f"images/{fileNumber}.png"]
+
+    for count in range(1,numberOfCommentsUsed + 1):
         imagePaths.append(f"images/comment{count}.png")
         (imageWidth, _imageHeight) = VideoMethods.resizeImageForYouTubeShort(imagePaths[count])
         imageWidths.append(imageWidth)
-        count += 1
+
     logger.info("Images resized")
 
     # Turns post image into .mp4 file
@@ -146,16 +139,14 @@ def main():
     logger.info("Final video given Audio")
 
     #Pull title and description from comments
-    title = comments[int(parsedTextToSpeech[0][6:7]) - 1][0]
+    title = comments[fileNumber - 1][0]
     if len(title) > 50:
         title = f"{title[:50]}..."
-    description = comments[int(parsedTextToSpeech[0][6:7]) - 1][0]
+    description = comments[fileNumber - 1][0]
     videoData = {"Title" : title, "Description" : description}
 
     #Upload video to youtube
-    youtubeUploader = WebHandler("a") #finds the driver no matter the given string
-    youtubeUploader.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
-    youtubeUploader.closeDriver()
+    screenShotter.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
     logger.info("Video uploaded")
 
 

@@ -1,6 +1,7 @@
 import os
 from typing import Tuple, List, Any
 import praw
+import re
 
 
 class RedditScraper:
@@ -35,7 +36,7 @@ class RedditScraper:
 
         
 
-    def getTopPostAndComments(self, subreddit : str, numberOfPosts=1, depth=20) -> tuple[list[list[str]], list[str], dict]:
+    def getTopPostAndComments(self, subreddit : str, numberOfPosts=1, depth=20) -> tuple[list[list[str]], list[str], list]:
         """getTopPostComments takes in a name of a subreddit and then returns a tuple that contains a 2d array of posts
         and comments,a list of urls, and dictionary containing comment IDS. The number of posts parameter decides how
         many posts from reddit to pull. The depth parameter decides how many posts deep to go into hot posts before
@@ -45,13 +46,13 @@ class RedditScraper:
         #0th index, post body at the 1st, and post contents for remaining indexes
         postInfo = []
         urlArray = []
-        #commentDict contains the post ids as they are pulled from Praw. The format they are stored is as follows:
+        #commentIds contains the post ids as they are pulled from Praw. The format they are stored is as follows:
         #{"comment{commentNumber}" : "{commentId}", ...} where both the key and index are strings
-        #TODO: commentDict should be a list of dictionaries or the rest of the return structure for this method should be changed
-        commentDict = {}
+        #TODO: commentIds should be a list of dictionaries or the rest of the return structure for this method should be changed
+        commentIds = []
         if numberOfPosts < 1:
             print("Number of Posts must be greater than 1.")
-            return (postInfo, urlArray, commentDict)
+            return (postInfo, urlArray, commentIds)
         for post in self.reddit.subreddit(subreddit).hot(limit=depth):
             if(len(postInfo) >= numberOfPosts):
                 break
@@ -80,7 +81,7 @@ class RedditScraper:
                     continue
                 tempList.append(parsed)
                 count += 1
-                commentDict[f"comment{count}"] = top_level_comment.id
+                commentIds.append(top_level_comment.id)
                 #Only pull 5 top comments
                 if count > 5:
                     break
@@ -92,13 +93,15 @@ class RedditScraper:
             f.write(url + "\n")
             self.pastUrls.add(url)
         f.close()
-        return (postInfo, urlArray, commentDict)
+        return (postInfo, urlArray, commentIds)
 
 
     def parseComments(self,comment : str) -> str:
         """parseComments method goes through scraped comments and censored out words based on provided
         bannedWordList.txt. If the comment is too long it returns the string "error" because the comment is too long
         to use."""
+        comment = re.sub(r'(\W)(?=\1)', '', comment)
+        comment= re.sub(r'http\S+', '', comment)
         if(len(comment) > 1000):
             return "error"
         if not self.shouldCensor:
@@ -107,7 +110,7 @@ class RedditScraper:
         lines = f.readlines()
         for line in lines:
             line = line.replace("\n", "")
-            comment = comment.replace(line,"*" * len(line))
+            comment = comment.replace(line,"bleep")
         f.close()
         return comment
 
@@ -116,6 +119,8 @@ class RedditScraper:
         """parseComments method goes through scraped post body and censored out words based on provided
            bannedWordList.txt. If the post body is too long it returns the string "error" because the comment is too
            long to use."""
+        body = re.sub(r'(\W)(?=\1)', '', body)
+        body = re.sub(r'http\S+', '', body)
         if(len(body) > 2500):
             return "error"
         if not self.shouldCensor:
@@ -124,7 +129,7 @@ class RedditScraper:
         lines = f.readlines()
         for line in lines:
             line = line.replace("\n", "")
-            body = body.replace(line, "*" * len(line))
+            body = body.replace(line, "bleep")
         f.close()
         return body
 
