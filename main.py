@@ -30,9 +30,12 @@ def main():
     comments = ""
     urls = ""
     commentIdsPulled = ""
-    #comments used will be a list of integers for the comments used in the mp3 of each post
-    numberOfCommentsUsed = ""
+    numberOfCommentsUsed = 0
+    #audioLengths will be a list of floats given by the length of each TTS portion of audio used
+    audioLengths = ""
     parsedTextToSpeech = ""
+    #determines if the post used has a body or not
+    postBody = True
     count = 0
     retries = 5
     reddit = RedditScraper(client_id, client_secret, user_agent)
@@ -43,7 +46,7 @@ def main():
             sys.exit()
         count += 1
         #Scrape reddit posts
-        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("amItheasshole")
+        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("csmajors")
         commentsForGTTS = []
         for i in comments:
             temp = []
@@ -54,7 +57,8 @@ def main():
 
         #Create gTTS .mp3 files with reddit posts
         AudioMethods.removeAudioFolder()
-        numberOfCommentsUsed = AudioMethods.textToSpeech(commentsForGTTS, silencePath="permAudio/500milsil.mp3")
+        (numberOfCommentsUsed, audioLengths, postBody) = AudioMethods.textToSpeech(commentsForGTTS,
+                                                                                   silencePath="permAudio/500milsil.mp3")
         parsedTextToSpeech = AudioMethods.parseTextToSpeechMP3s()
         if len(parsedTextToSpeech) > 0:
             foundUsableRedditPosts = True
@@ -65,11 +69,10 @@ def main():
 
     #gets the comment ids only of the comments that are used to make the mp3
     commentIdsUsed = []
-    for num in numberOfCommentsUsed:
-        count = 1
-        while count <= num:
-            commentIdsUsed.append(commentIdsPulled[f"comment{count}"])
-            count += 1
+    count = 1
+    while count <= numberOfCommentsUsed:
+        commentIdsUsed.append(commentIdsPulled[f"comment{count}"])
+        count += 1
 
     #Take screenshots of reddit posts
     screenShotter = WebHandler("a") #finds the driver no matter the given string
@@ -87,9 +90,9 @@ def main():
     AudioMethods.mergeAudioFiles([parsedTextToSpeech[0], "audio/modMusic.mp3"])
     logger.info("Audio files merged")
 
-
     #Get duration of the merged .mp3 file
     finalAudio = AudioFileClip("audio/finalAudio.mp3")
+    #TODO: Test if int casting this number could be whats causing audio issues
     finalAudioDuration = int(finalAudio.duration)
     finalAudio.close()
     #Pull random video from bndvd directory and format it for youtube shorts
@@ -99,18 +102,43 @@ def main():
                                                       startCut=backgroundVideoStart)
     logger.info("Background video formatted")
 
-    #Resize post screenshot to fit youtube shorts
+    #Resize post screenshot(s) to fit youtube shorts
+    #list of resized image widths
+    imageWidths = []
+    #resizing main post images
     (imageWidth, _imageHeight) = VideoMethods.resizeImageForYouTubeShort(f"images/{parsedTextToSpeech[0][6:7]}.png")
-    logger.info("Image resized")
+    imageWidths.append(imageWidth)
+    #list of relative filepaths to the images being turned into videos
+    imagePaths = [f"images/{parsedTextToSpeech[0][6:7]}.png"]
+    count = 1
+    while count <= numberOfCommentsUsed:
+        imagePaths.append(f"images/comment{count}.png")
+        (imageWidth, _imageHeight) = VideoMethods.resizeImageForYouTubeShort(imagePaths[count])
+        imageWidths.append(imageWidth)
+        count += 1
+    logger.info("Images resized")
 
-    # Turns post image into .mp4 file 
-    VideoMethods.createImageVideo("images/reSizedImage.png", finalAudioDuration)
+    # Turns post image into .mp4 file
+    #startTimes is a list of the durations of the image videos
+    startTimes = VideoMethods.createImageVideo(imagePaths, audioLengths, finalAudioDuration=finalAudioDuration,
+                                  silencePath="permAudio/500milsil.mp3", postBody=postBody)
     logger.info("Image video created")
 
     #Merge background video with post video
-    #YouTube shorts are 1080 pixels wide
-    newYPos = (1080 - imageWidth) / 2
-    VideoMethods.combineVideoClips("video/silentVideo.mp4", "video/imageVideo.mp4", xPosition=65, yPosition=newYPos)
+    #Finds correct yPositions for the images in the video
+    count = 0
+    for width in imageWidths:
+        # YouTube shorts are 1080 pixels wide
+        imageWidths[count] = (1080 - width) / 2
+        count += 1
+    imageVideos = os.listdir("./video/imageVideo")
+    count = 0
+    for video in imageVideos:
+        imageVideos[count] = f"video/imageVideo/{video}"
+        count += 1
+    imageVideos.insert(0, "video/silentVideo.mp4")
+    VideoMethods.combineVideoClips(imageVideos, xPosition=65, yPosition=imageWidths,
+                                   startTimes=startTimes)
     logger.info("Final Video made")
 
     #Combine merged audio file with merged video file

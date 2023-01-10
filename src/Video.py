@@ -7,6 +7,7 @@ from moviepy.editor import AudioFileClip
 from PIL import Image
 import os
 import random
+import shutil
 
 
 class VideoMethods:
@@ -80,7 +81,7 @@ class VideoMethods:
         if width % 2 != 0:
             width += 1
         reSizedImage = image.resize((width, height))
-        reSizedImage.save("images/reSizedImage.png", quality=100)
+        reSizedImage.save(imagePath, quality=100)
         reSizedImage.close()
         image.close()
         return (width, height)
@@ -101,18 +102,75 @@ class VideoMethods:
         image.close()
 
     @staticmethod
-    def createImageVideo(imagePath : str, duration : int):
-        """Takes in a file path to the image file and then makes a video the length of the provided duration.IMPORTANT:
-        Image passed in must have even dimensions or the video made will be black!!!!"""
-        if not os.path.exists("./video"):
+    def createImageVideo(imagePath : list[str], duration : list, finalAudioDuration=None, silencePath="", postBody=False):
+        """Takes in a list of file paths to the image files and a list of the durations. The list of durations can be
+         any numeric primitive. Then it saves the newly made image videos into memory and returns nothing. The image and
+         the duration you want the video of it to have should have the same index in their respective lists. IMPORTANT:
+         Image passed in must have even dimensions or the video made will be blank!!!!"""
+        if postBody:
+            #list of durations given have a duration for title and post when they share the same image
+            if len(imagePath) != len(duration) - 1:
+                print("Error: List of images paths should be equal to list of durations")
+                raise
+        else:
+            if len(imagePath) != len(duration):
+                print("Error: List of images paths should be equal to list of durations")
+                raise
+        #makes sure every item in duration is a float or integer
+        count = 0
+        for num in duration:
+            if type(num) is int:
+                duration[count] = float(num)
+            if type(duration[count]) is not float:
+                print("Error: duration must be a list of numeric primitives")
+                raise
+            count += 1
+        if not os.path.exists("./video/"):
             os.makedirs("./video")
-        try:
-            clip = ImageClip(imagePath, duration=duration)
-        except Exception as e:
-            print("Error: Could not find file.")
-            return False
-        clip.write_videofile("video/imageVideo.mp4", fps=7)
-        clip.close()
+        if not os.path.exists("./video/imageVideo"):
+            os.makedirs("./video/imageVideo")
+        #combines title and post body duration as they share the same image
+        if postBody:
+            duration[0] += duration.pop(1)
+        #adds the duration of the silence path variable provided to all the durations except the last one
+        if silencePath != "":
+            try:
+                inBetweenClip = AudioFileClip(silencePath)
+            except Exception as e:
+                print(f"File provided {silencePath} not found")
+                raise e
+            inBetweenClipDuration = inBetweenClip.duration
+            count = 0
+            while count < len(duration) - 1:
+                duration[count] += inBetweenClipDuration
+                count += 1
+            inBetweenClip.close()
+        #adds missing duration to final image clip if the total duration of the clips is not as long
+        if finalAudioDuration is not None:
+            if type(finalAudioDuration) is float or type(finalAudioDuration) is int:
+                totalDuration = 0
+                for num in duration:
+                    totalDuration += num
+                if totalDuration < finalAudioDuration:
+                    duration[-1] += (finalAudioDuration - totalDuration)
+            else:
+                print("Provided finalAudioDuration must be numeric primitive")
+                raise
+        count = 0
+        while count < len(imagePath):
+            try:
+                clip = ImageClip(imagePath[count], duration=duration[count])
+            except Exception as e:
+                print("Error: Could not find file.")
+                return False
+            clip.write_videofile(f"video/imageVideo/{count + 1}.mp4", fps=7)
+            clip.close()
+            count += 1
+        return duration
+
+    @staticmethod
+    def deleteImageVideoFolder():
+        shutil.rmtree(f"video/imageVideo")
 
     @staticmethod
     def resizeVideoClip(clipPath : str, height : int, width : int):
@@ -129,22 +187,67 @@ class VideoMethods:
         clip.close()
 
     @staticmethod
-    def combineVideoClips(*filePaths : str, xPosition=0, yPosition=0):
-        """Combines all video clips provided. xPosition and yPostion allow you to chose the position which the second
-        video will be places over the first video."""
+    def combineVideoClips(filePaths : list[str], xPosition=None, yPosition=None, startTimes=None, backgroundVideo=True):
+        """Combines all video clips provided into one video. xPosition and yPostion allow you to choose the position
+        which other videos are placed over the first one. startTimes should a list of when you want the videos to begin
+        in the final video other than the background video if one is provided. All videos need a start time otherwise
+        they will start at time 0. Provided start times should share the same order as the provided mp4 locations bar
+        the first one if backgroundVideo is True."""
         if not os.path.exists("./video"):
             os.makedirs("./video")
+        if startTimes is None:
+            startTimes = []
+        #xPos and yPos are defaulted to 0
+        if xPosition is None:
+            xPosition = 0
+        if yPosition is None:
+            yPosition = 0
         clips = []
-        try:
-            for path in filePaths:
+        for path in filePaths:
+            try:
                 clips.append(VideoFileClip(path))
-        except Exception as e:
-            print("One or more of provided files not found.")
-            raise e
-        clips[1] = clips[1].set_position((xPosition, yPosition))
-        combinedClip = CompositeVideoClip(clips)
+            except Exception as e:
+                print("One or more of provided files not found.")
+                raise e
+        if len(clips) <= 1:
+            print("Error: One or more clips must be provided")
+        #New list to store copies of clips created from pymovie video formatting methods
+        formattedClips = []
+        count = 0
+        #background videos do not receive positional arguments
+        if backgroundVideo:
+            formattedClips.append(clips[0])
+            count += 1
+        startTime = 0
+        while count < len(clips):
+            tempX = xPosition
+            tempY = yPosition
+            if type(xPosition) is list:
+                if backgroundVideo:
+                    if len(xPosition) >= count:
+                        tempX = xPosition[count - 1]
+                else:
+                    if len(xPosition) > count:
+                        tempX = xPosition[count]
+            if type(yPosition) is list:
+                if backgroundVideo:
+                    if len(yPosition) >= count:
+                        tempY = yPosition[count - 1]
+                else:
+                    if len(yPosition) > count:
+                        tempY = yPosition[count]
+            clip = clips[count].set_position((tempX, tempY))
+            if backgroundVideo:
+                formattedClips.append(clip.set_start(startTime))
+                startTime += startTimes[count - 1]
+            else:
+                formattedClips.append(clip.set_start(startTime))
+                startTime += startTimes[count]
+            count += 1
+        combinedClip = CompositeVideoClip(formattedClips)
         combinedClip.write_videofile("video/combinedVideo.mp4")
         combinedClip.close()
+        #closeing the original clip closes all copies
         for clip in clips:
             clip.close()
 
