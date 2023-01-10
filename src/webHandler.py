@@ -13,21 +13,21 @@ class WebHandler:
     """This class is contains general methods for using selenium to interact with the Google Chrome."""
     def __init__(self, path):
         """Creates an object with the Selenium chrome driver. Takes in the file path to the chrome driver."""
-        try:
-            ser = Service(path)
-            options = webdriver.ChromeOptions()
-            #Comment this out for debugging
-            options.headless = True
-            self.driver = webdriver.Chrome(service=ser, options=options)
-        except Exception as e:
-            print("Error: Incorrect path to Chrome Driver.")
-            self.driver.quit()
-            raise e
+        self.ser = Service(path)
+        self.options = webdriver.ChromeOptions()
+        #Comment this out for debugging
+        self.options.headless = True
+        self.driver = None 
 
     def screenShotReddit(self, urls : list[str], commentIds=None):
         """function(url) -> None, saves screenshot in ./images directory. commentIds gives the option to screenshot
         Reddit comments given their IDS as they are pulled by the Praw Reddit API. commentIds should be given as a list
         of Ids."""
+        try:
+            self.driver = webdriver.Chrome(service=self.ser, options=self.options)
+        except Exception as e:
+            print("Error : failed to open chrome driver")
+            raise e
         if not os.path.exists("./images"):
             os.makedirs("./images")
         self.driver.maximize_window()
@@ -64,12 +64,17 @@ class WebHandler:
                     imageStream = io.BytesIO(image)
                     im = Image.open(imageStream)
                     im.save(f"./images/comment{count}.png")
+        self.driver.quit()
 
     def uploadYoutubeVideo(self, channel : str, username : str, password : str, filepath : str, videoInfo : dict):
         """this method takes in a url to a channel, a gmail username/password, a filepath to the mp4 you would like
         to upload, and a dictionary containing video info on the title and description. Then it uses selenium to upload
         the video to the YouTube channel provided. IMPORTANT: Does not work with 2 factor identification!!!"""
         """TODO Make it possible to add tags and do way more exception handling"""
+        try:
+            self.driver = webdriver.Chrome(service=self.ser, options=self.options)
+        except Exception as e:
+            print("Error: failed to open chrome driver")
         enter = Keys.ENTER
         #searching for youtube page
         try:
@@ -234,7 +239,8 @@ class WebHandler:
         action.click().perform()
         action.pause(20).perform()
 
-    def closeDriver(self):
-        """Closes the selenium web driver."""
         self.driver.quit()
+
+
+        
 

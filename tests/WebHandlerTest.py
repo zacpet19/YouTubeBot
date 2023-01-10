@@ -7,7 +7,8 @@ from src.webHandler import WebHandler
 def invalidPathTest():
     errorThrown = False
     try:
-        WebHandler("")
+        a = WebHandler("")
+        a.screenShotReddit(["https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/"])
     except Exception:
         errorThrown = True
     
@@ -18,7 +19,7 @@ def invalidUrlTest():
     screenshot = WebHandler("a")
     errorThrown = False
     try:
-        screenshot.takeScreenShot("https://google.com")
+        screenshot.screenShotReddit(["https://google.com"])
     except Exception:
         errorThrown = True
     assert errorThrown == True
@@ -29,7 +30,6 @@ def screenshotTest():
     screenshot.screenShotReddit(["https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/", "https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/"])
     assert os.path.exists("./images")
     assert os.path.exists("./images/1.png")
-    screenshot.closeDriver()
     assert os.path.exists("./images/2.png")
     os.remove("./images/2.png")
     os.remove("./images/1.png")
