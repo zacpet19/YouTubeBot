@@ -25,6 +25,8 @@ def main():
     #Should check for missing environment variables here
 
     logger.info("Environment Variables loaded")
+
+    VideoMethods.deleteImageVideoFolder()
     #declaring variables to store things found in the while loop
     foundUsableRedditPosts = False
     comments = ""

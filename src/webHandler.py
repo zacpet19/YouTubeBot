@@ -23,6 +23,7 @@ class WebHandler:
         """function(url) -> None, saves screenshot in ./images directory. commentIds gives the option to screenshot
         Reddit comments given their IDS as they are pulled by the Praw Reddit API. commentIds should be given as a list
         of Ids."""
+        #TODO: make urls a string instead of a list
         try:
             self.driver = webdriver.Chrome(service=self.ser, options=self.options)
         except Exception as e:
@@ -49,21 +50,18 @@ class WebHandler:
             im.save(f"./images/{count}.png")
             count += 1
         #screenshotting comments
-        if type(commentIds) is list and len(commentIds) > 0:
-            count = 0
-            for c in commentIds:
-                count += 1
-                try:
-                    #Praw doesnt pull entire comment ID but they all start with t1_
-                    element = self.driver.find_element(By.ID, "t1_" + c)
-                except Exception as e:
-                    element = None
-                    print(f"ERROR: Comment #{count} ID not found")
-                if element is not None:
-                    image = element.screenshot_as_png
-                    imageStream = io.BytesIO(image)
-                    im = Image.open(imageStream)
-                    im.save(f"./images/comment{count}.png")
+        for (index, c) in enumerate(commentIds):
+            try:
+                #Praw doesnt pull entire comment ID but they all start with t1_
+                element = self.driver.find_element(By.ID, "t1_" + c)
+            except Exception as e:
+                element = None
+                print(f"ERROR: Comment #{index + 1} ID not found")
+            if element is not None:
+                image = element.screenshot_as_png
+                imageStream = io.BytesIO(image)
+                im = Image.open(imageStream)
+                im.save(f"./images/comment{index + 1}.png")
         self.driver.quit()
 
     def uploadYoutubeVideo(self, channel : str, username : str, password : str, filepath : str, videoInfo : dict):

@@ -147,17 +147,12 @@ class VideoMethods:
             inBetweenClip.close()
         #adds missing duration to final image clip if the total duration of the clips is not as long
         if finalAudioDuration is not None:
-            if type(finalAudioDuration) is float or type(finalAudioDuration) is int:
-                totalDuration = 0
-                for num in duration:
-                    totalDuration += num
-                if totalDuration < finalAudioDuration:
-                    duration[-1] += (finalAudioDuration - totalDuration)
-            else:
-                print("Provided finalAudioDuration must be numeric primitive")
-                raise
-        count = 0
-        while count < len(imagePath):
+            totalDuration = 0
+            for num in duration:
+                totalDuration += num
+            if totalDuration < finalAudioDuration:
+                duration[-1] += (finalAudioDuration - totalDuration)
+        for count in range(len(imagePath)):
             try:
                 clip = ImageClip(imagePath[count], duration=duration[count])
             except Exception as e:
@@ -165,12 +160,12 @@ class VideoMethods:
                 return False
             clip.write_videofile(f"video/imageVideo/{count + 1}.mp4", fps=7)
             clip.close()
-            count += 1
         return duration
 
     @staticmethod
     def deleteImageVideoFolder():
-        shutil.rmtree(f"video/imageVideo")
+        if not os.path.exists("./video/imageVideo"):
+            shutil.rmtree(f"video/imageVideo")
 
     @staticmethod
     def resizeVideoClip(clipPath : str, height : int, width : int):
