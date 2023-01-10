@@ -35,4 +35,6 @@ Add screenshots for comments to video
 Use selenium to add tags to youtube shorts
 Implement proxy rotation to avoid google CAPTCHA
 Make method that changes audio pitch
+Make constructor method for Audio class?
+Make constructor method for Video class?
 

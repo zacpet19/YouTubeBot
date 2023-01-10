@@ -34,7 +34,12 @@ class AudioMethods:
                 raise e
             inBetweenAudioDuration = inBetweenAudio.duration
             inBetweenAudio.close()
-        commentsUsed = []
+        #TODO: make list again if needed
+        commentsUsed = 0
+        #list of durations(floats) for each comment mp4 made
+        #TODO: might need to be a 2d array of floats
+        mp4Durations = []
+        postBody = True
         for i in text:
             if not os.path.exists(f"./audio/post{count}"):
                 os.makedirs(f"./audio/post{count}")
@@ -43,7 +48,10 @@ class AudioMethods:
             for j in i:
                 #reddit scraper will pull empty string if the post body is empty and this is to address that
                 if j == "":
+                    if innerCount == 2:
+                        postBody = False
                     continue
+                #creating individual audio clips
                 audio = gTTS(text=j,lang = "en", slow=False, tld = "US")
                 audio.save(f"./audio/post{count}/{innerCount}.mp3")
                 audioToAdd = AudioFileClip(f"./audio/post{count}/{innerCount}.mp3")
@@ -53,18 +61,20 @@ class AudioMethods:
                     break
                 duration += inBetweenAudioDuration
                 innerCount += 1
+            #wont create final clip if only title audio clips was made
             if innerCount > 2:
-                audioFiles = os.listdir(f"./audio/post{count}")
+                audioFilePaths = os.listdir(f"./audio/post{count}")
                 #removes last audio file created because it would make the clip go over 60 seconds
                 if duration >= 60:
-                    audioFiles.pop()
+                    audioFilePaths.pop()
                 #subtracts 2 to account for post title and body
-                commentsUsed.append(len(audioFiles) - 2)
+                commentsUsed = (len(audioFilePaths) - 2)
                 clips = []
-                for c in audioFiles:
+                for c in audioFilePaths:
                     clips.append(AudioFileClip(f"./audio/post{count}/{c}"))
+                    mp4Durations.append(clips[-1].duration)
                     #adds the audio clip you want played in between comments/posts
-                    if silencePath != "" and c != audioFiles[-1]:
+                    if silencePath != "" and c != audioFilePaths[-1]:
                         clips.append(AudioFileClip(silencePath))
                 finalClip = concatenate_audioclips(clips)
                 finalClip.write_audiofile(f"audio/{count}.mp3")
@@ -75,7 +85,8 @@ class AudioMethods:
             #Be careful messing with this because it removes an entire directory and all things below it
             shutil.rmtree(f"audio/post{count}")
             count += 1
-        return commentsUsed
+        #returns an int and a list of floats
+        return (commentsUsed, mp4Durations, postBody)
 
     @staticmethod
     def parseTextToSpeechMP3s():
