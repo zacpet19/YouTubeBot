@@ -19,9 +19,9 @@ Cannot screen shot Reddit post if it is on an 18+ page
 Some audio clips after combining will have "brrt" sound at the end
 YouTube will occasionally require 2-factor authentication even when disabled causing upload process to fail
 Fails to log into gmail when faced with anti-bot countermeasures
+Selenium will occasionally fail and then work under similar circumstances
 
 TODO:
-Access subreddit names from a .txt file
 Bypass 18+ page on Reddit for screenshot
 Change Reddit scraper return structure
 Add second passthrough of docstrings
@@ -35,4 +35,6 @@ Implement proxy rotation to avoid google CAPTCHA
 Make method that changes audio pitch
 Make constructor method for Audio class?
 Make constructor method for Video class?
-
+Make logs carry over
+Implement random subreddit select method
+Give selenium better error handling

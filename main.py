@@ -23,7 +23,7 @@ def main():
     client_secret = os.getenv('client_secret')
     user_agent = os.getenv('user_agent')
     #Should check for missing environment variables here
-
+    logger.info("\n**************** NEW VIDEO CREATION START ****************")
     logger.info("Environment Variables loaded")
 
     VideoMethods.deleteImageVideoFolder()
@@ -48,7 +48,7 @@ def main():
             sys.exit()
         count += 1
         #Scrape reddit posts
-        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("amItheasshole")
+        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("Antiwork")
         logger.info("Potential Reddit posts scraped")
 
         #Create gTTS .mp3 files with reddit posts
@@ -72,7 +72,6 @@ def main():
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
     randomBackgroundMusic = AudioMethods.getRandomFile("bndms")
-    logger.info("Background music used was " + randomBackgroundMusic)
 
     AudioMethods.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .2)
     AudioMethods.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
@@ -151,6 +150,9 @@ def main():
     #Upload video to youtube
     screenShotter.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
     logger.info("Video uploaded")
+    logger.info(f"Video Name: {title}")
+    logger.info("Background music used: " + randomBackgroundMusic)
+    logger.info("Background video used " + randomBackgroundVideo)
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ class Logger:
 
     def __init__(self):
         self.name = "Epic logger"
-        self.logFile = open("logs.txt","w", encoding="utf-8")
+        self.logFile = open("logs.txt","a", encoding="utf-8")
     
     def debug(self, string: str):
         text = f"[{self.getTime()}][DEBUG] {string}"
