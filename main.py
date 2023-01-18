@@ -48,7 +48,7 @@ def main():
             sys.exit()
         count += 1
         #Scrape reddit posts
-        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("csmajors")
+        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("amItheasshole")
         logger.info("Potential Reddit posts scraped")
 
         #Create gTTS .mp3 files with reddit posts
@@ -144,7 +144,8 @@ def main():
     title = comments[fileNumber - 1][0]
     if len(title) > 50:
         title = f"{title[:50]}..."
-    description = comments[fileNumber - 1][0]
+    description = f"{comments[fileNumber - 1][0]}\n\n To make videos like this check out my gitgub at " \
+                  f"github.com/zacpet19/YouTubeBot"
     videoData = {"Title" : title, "Description" : description}
 
     #Upload video to youtube

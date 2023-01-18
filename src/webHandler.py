@@ -235,10 +235,4 @@ class WebHandler:
         action.move_to_element(elementToMoveTo).perform()
         action.move_by_offset(0, 30).perform()
         action.click().perform()
-        action.pause(20).perform()
-
         self.driver.quit()
-
-
-        
-

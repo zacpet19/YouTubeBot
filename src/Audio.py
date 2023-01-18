@@ -67,8 +67,12 @@ class AudioMethods:
                 #removes last audio file created because it would make the clip go over 60 seconds
                 if duration >= 60:
                     audioFilePaths.pop()
-                #subtracts 2 to account for post title and body
-                commentsUsed = (len(audioFilePaths) - 2)
+                if postBody:
+                    #subtracts 2 to account for post title and body
+                    commentsUsed = (len(audioFilePaths) - 2)
+                else:
+                    #only subtracts 1 if not post body
+                    commentsUsed = (len(audioFilePaths) - 1)
                 clips = []
                 for c in audioFilePaths:
                     clips.append(AudioFileClip(f"./audio/post{count}/{c}"))

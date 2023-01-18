@@ -30,8 +30,6 @@ Write tests for new text to speech methods
 write tests for new video methods
 Implement better censorship method
 Benchmark censorship methods
-switch to headless chrome?
-Add screenshots for comments to video
 Use selenium to add tags to youtube shorts
 Implement proxy rotation to avoid google CAPTCHA
 Make method that changes audio pitch
