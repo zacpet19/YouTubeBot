@@ -166,3 +166,7 @@ class RedditScraper:
         #removes space at the end
         return stringBuilder[:len(stringBuilder) - 1]
 
+    def subredditList(self):
+        subreddits = ["csmajors", "amItheasshole", "askreddit", "Antiwork"]
+        return subreddits
+

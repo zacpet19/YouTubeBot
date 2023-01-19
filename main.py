@@ -7,6 +7,7 @@ from src.Video import VideoMethods
 from src.Logger import Logger
 from dotenv import load_dotenv
 import sys
+import random
 
 
 
@@ -23,7 +24,7 @@ def main():
     client_secret = os.getenv('client_secret')
     user_agent = os.getenv('user_agent')
     #Should check for missing environment variables here
-    logger.info("\n**************** NEW VIDEO CREATION START ****************")
+    logger.info("**************** NEW VIDEO CREATION START ****************")
     logger.info("Environment Variables loaded")
 
     VideoMethods.deleteImageVideoFolder()
@@ -41,6 +42,9 @@ def main():
     count = 0
     retries = 5
     reddit = RedditScraper(client_id, client_secret, user_agent)
+    # getting random subreddit from list
+    subreddits = reddit.subredditList()
+    randomSubreddit = subreddits[random.randint(0, len(subreddits) - 1)]
     #loops until it is able to get a usable mp3 file from Reddit posts
     while not foundUsableRedditPosts:
         if count > retries:
@@ -48,7 +52,7 @@ def main():
             sys.exit()
         count += 1
         #Scrape reddit posts
-        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments("Antiwork")
+        (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments(randomSubreddit)
         logger.info("Potential Reddit posts scraped")
 
         #Create gTTS .mp3 files with reddit posts
