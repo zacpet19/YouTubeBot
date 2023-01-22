@@ -57,11 +57,12 @@ class RedditScraper:
             if(len(postInfo) >= numberOfPosts):
                 break
             #avoids non text posts
-            if (post.stickied or post.url.endswith(('jpg', 'jpeg', 'png', 'gif', "mp4"))):
+            if (post.stickied or post.url.endswith(('jpg', 'jpeg', 'png', 'gif', "mp4", "ogg", "WebM"))):
                 continue
             if (post.url in self.pastUrls):
                 continue
-            if post.over_18:
+            #Doesnt use 18+ posts or non text posts
+            if post.over_18 or not post.is_self:
                 continue
             parsedTitle = self.parsePostBody(post.title)
             parsedBody = self.parsePostBody(post.selftext)
