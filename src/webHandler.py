@@ -226,6 +226,7 @@ class WebHandler:
             print("Unable to find element sign out failed.")
             raise e
         action.click(elementToMoveTo).perform()
+        action.pause(20).perform()
         #clicking sign out button
         try:
             elementToMoveTo = wait.until(EC.element_to_be_clickable((By.ID, "contentWrapper")))

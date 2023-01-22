@@ -38,3 +38,5 @@ Make constructor method for Video class?
 Make logs carry over
 Implement random subreddit select method
 Give selenium better error handling
+Ignore posts about certain things
+Ignore posts with videos?

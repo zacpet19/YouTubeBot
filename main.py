@@ -42,15 +42,15 @@ def main():
     count = 0
     retries = 5
     reddit = RedditScraper(client_id, client_secret, user_agent)
-    # getting random subreddit from list
-    subreddits = reddit.subredditList()
-    randomSubreddit = subreddits[random.randint(0, len(subreddits) - 1)]
     #loops until it is able to get a usable mp3 file from Reddit posts
     while not foundUsableRedditPosts:
-        if count > retries:
+        if count >= retries:
             logger.error("Unable to find usable reddit posts, shutting down")
             sys.exit()
         count += 1
+        # getting random subreddit from list
+        subreddits = reddit.subredditList()
+        randomSubreddit = subreddits[random.randint(0, len(subreddits) - 1)]
         #Scrape reddit posts
         (comments, urls, commentIdsPulled) = reddit.getTopPostAndComments(randomSubreddit)
         logger.info("Potential Reddit posts scraped")
@@ -66,6 +66,7 @@ def main():
             logger.warn(f"Reddit posts not accepted, retrying {count}/{retries}...")
 
     logger.info("Text to speech sucessfully created, moving on")
+    logger.info(f"Post url(s): {urls}")
 
     #gets the comment ids only of the comments that are used to make the mp3
     commentIdsUsed = commentIdsPulled[:numberOfCommentsUsed]
