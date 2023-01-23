@@ -55,9 +55,34 @@ def parseTest():
     print(reddit.parseComments(badText))
     print("Parse test passed")
 
-    
+def contentFilterTest():
+    load_dotenv()
+    client_id = os.getenv('client_id')
+    client_secret = os.getenv('client_secret')
+    user_agent = os.getenv('user_agent')
+
+    reddit = RedditScraper(client_id, client_secret, user_agent)
+
+    test1 = "I hate Joe Biden."
+    test2 = "I hate Joe Biden protests."
+    test3 = "The President of France, Emmanuel Macron, is trying to raise the retirement age from 62 to 64. " \
+            "So the eight biggest unions across the country called a massive wave of strikes and protests today, " \
+            "with over 200 actions across the country."
+    test4 = "Hello there"
+    test5 = "I am having a good time and not saying anything that should be filtered."
+    test6 = ""
+
+    assert reddit.contentFilter(test1) is True
+    assert reddit.contentFilter(test2) is True
+    assert reddit.contentFilter(test3) is True
+    assert reddit.contentFilter(test4) is False
+    assert reddit.contentFilter(test5) is False
+    assert reddit.contentFilter(test6) is False
+
+    print("Filter tests passed")
 
 
 if __name__ == "__main__":
-    getTopPostCommentsTest()
-    parseTest()
+    #getTopPostCommentsTest()
+    #parseTest()
+    contentFilterTest()

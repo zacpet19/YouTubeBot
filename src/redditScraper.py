@@ -6,7 +6,7 @@ import re
 
 class RedditScraper:
     """The RedditScraper class contains methods for scraping reddit to get posts and comments and parsing through them.
-    As of now it is not very general use and th parsers have limited functionality."""
+    As of now it is not very general use and the parsers have limited functionality."""
     def __init__(self,client_id,client_secret, user_agent):
         """Constructor for object that allows interaction with Reddit."""
         self.reddit = praw.Reddit(client_id=client_id,client_secret=client_secret,user_agent=user_agent)
@@ -61,8 +61,8 @@ class RedditScraper:
                 continue
             if (post.url in self.pastUrls):
                 continue
-            #Doesnt use 18+ posts or non text posts
-            if post.over_18 or not post.is_self:
+            #Doesnt use 18+ posts, non text posts, or posts with filtered content
+            if post.over_18 or not post.is_self or self.contentFilter(post.title) or self.contentFilter(post.selftext):
                 continue
             parsedTitle = self.parsePostBody(post.title)
             parsedBody = self.parsePostBody(post.selftext)
@@ -170,6 +170,18 @@ class RedditScraper:
         return stringBuilder[:len(stringBuilder) - 1]
 
     def subredditList(self):
-        subreddits = ["csmajors", "amItheasshole", "askreddit", "Antiwork"]
+        subreddits = ["csmajors", "amItheasshole", "askreddit"]
         return subreddits
 
+    def contentFilter(self, string : str) -> bool:
+        """Takes in a string and returns true if words in the string match are similiar to words in a preset list."""
+        filterList = ["biden", "trump", "protest", "shooting", "politics", "political", "pelosi", "union", "terrorist"]
+        splitString = string.split(" ")
+        for token in splitString:
+            for word in filterList:
+                if word.lower() == token.lower():
+                    return True
+                elif word.lower() in token.lower():
+                    if -2 < (len(word) - len(token)) < 2:
+                        return True
+        return False
