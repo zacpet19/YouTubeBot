@@ -8,16 +8,23 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
+from dotenv import load_dotenv
 
 class WebHandler:
     """This class is contains general methods for using selenium to interact with the Google Chrome."""
-    def __init__(self, path):
+    def __init__(self, path, headless=False):
         """Creates an object with the Selenium chrome driver. Takes in the file path to the chrome driver."""
         self.ser = Service(path)
         self.options = webdriver.ChromeOptions()
-        #Comment this out for debugging
-        # self.options.headless = True
-        # self.driver = None
+        #for headless chrome
+        if headless:
+            #Need to change user agent from normal headless one so google doesn't block access
+            load_dotenv()
+            userAgent = os.getenv('seleniumUserAgent')
+            self.options.add_argument(f"user-agent={userAgent}")
+            self.options.add_argument("window-size=1920,1080")
+            self.options.headless = True
+            self.driver = None
 
     def screenShotReddit(self, urls : list[str], commentIds=None):
         """function(url) -> None, saves screenshot in ./images directory. commentIds gives the option to screenshot
@@ -138,6 +145,7 @@ class WebHandler:
                 if attempts >= 5:
                     raise e
         #clicking video creation button
+        action.pause(20).perform()
         try:
             elementToMoveTo = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable((By.ID, "create-icon")))
         except Exception as e:

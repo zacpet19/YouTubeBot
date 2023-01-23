@@ -1,6 +1,7 @@
 import sys
 import os   
 sys.path.append('..')
+from dotenv import load_dotenv
 
 from src.webHandler import WebHandler
 
@@ -36,6 +37,42 @@ def screenshotTest():
     os.rmdir("./images")
     print("Screenshot Test Passed")
 
+def uploadVideoTest():
+    load_dotenv()
+
+    gmail = os.getenv('gmail')
+    password = os.getenv('gmailPassword')
+    channel = os.getenv('youtubeChannel')
+    videoPath = os.getenv("testFinalVideoPath")
+    driverLocation = os.getenv("driver_location")
+    videoData = {"Title" : "Test", "Description" : "This is a test upload"}
+
+    web = WebHandler(driverLocation)
+    web.uploadYoutubeVideo(channel, gmail, password, videoPath, videoData)
+
+    assert os.path.exists("./test.mp4")
+    print("Upload Test Passed")
+
+
+def uploadVideoWithHeadlessChromeTest():
+    load_dotenv()
+
+    gmail = os.getenv('gmail')
+    password = os.getenv('gmailPassword')
+    channel = os.getenv('youtubeChannel')
+    videoPath = os.getenv("testFinalVideoPath")
+    driverLocation = os.getenv("driver_location")
+    videoData = {"Title" : "Headless Test", "Description" : "This is a headless chrome test upload"}
+
+    web = WebHandler(driverLocation, headless=True)
+    web.uploadYoutubeVideo(channel, gmail, password, videoPath, videoData)
+
+    assert os.path.exists("./test.mp4")
+    print("Upload Test Passed")
+
+
 invalidPathTest()
 invalidUrlTest()
 screenshotTest()
+uploadVideoTest()
+uploadVideoWithHeadlessChromeTest()

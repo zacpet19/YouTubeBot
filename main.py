@@ -23,6 +23,7 @@ def main():
     client_id = os.getenv('client_id')
     client_secret = os.getenv('client_secret')
     user_agent = os.getenv('user_agent')
+    driverLocation = os.getenv('driver_location')
     #Should check for missing environment variables here
     logger.info("**************** NEW VIDEO CREATION START ****************")
     logger.info("Environment Variables loaded")
@@ -72,7 +73,7 @@ def main():
     commentIdsUsed = commentIdsPulled[:numberOfCommentsUsed]
 
     #Take screenshots of reddit posts
-    screenShotter = WebHandler("a") #finds the driver no matter the given string
+    screenShotter = WebHandler(driverLocation, headless=True)
     screenShotter.screenShotReddit(urls, commentIds=commentIdsUsed)
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
