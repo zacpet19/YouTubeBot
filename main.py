@@ -172,6 +172,8 @@ def main():
     logger.info("Background music used: " + randomBackgroundMusic)
     logger.info("Background video used " + randomBackgroundVideo)
 
+    logger.manageLogFile(5, 100000)
+
 
 if __name__ == '__main__':
     main()
