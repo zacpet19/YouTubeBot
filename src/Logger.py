@@ -39,6 +39,10 @@ class Logger:
         return now.strftime("%d/%m/%Y %H:%M:%S")
 
     def manageLogFile(self, maxLogs : int, bytesAllowedPerLog : int):
+        """Manage log file method will create legacy log files and new log files if current one goes over the
+        bytesAllowedPerLog parameter. Max logs is the amount of legacy logs you want to keep. The oldest logs will
+        be deleted if they exceed the number of max logs. The naming convention given to the logs is newest being the
+        smallest number and the oldest having the largest number."""
         if not os.path.exists("./oldLogs"):
             os.makedirs("./oldLogs")
 
