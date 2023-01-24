@@ -175,7 +175,8 @@ class RedditScraper:
 
     def contentFilter(self, string : str) -> bool:
         """Takes in a string and returns true if words in the string match are similiar to words in a preset list."""
-        filterList = ["biden", "trump", "protest", "shooting", "politics", "political", "pelosi", "union", "terrorist"]
+        filterList = ["biden", "trump", "protest", "shooting", "politics", "political", "pelosi", "union", "terrorist",
+                      "sex", "sexual"]
         splitString = string.split(" ")
         for token in splitString:
             for word in filterList:

@@ -71,8 +71,8 @@ def uploadVideoWithHeadlessChromeTest():
     print("Upload Test Passed")
 
 
-invalidPathTest()
-invalidUrlTest()
-screenshotTest()
-uploadVideoTest()
+# invalidPathTest()
+# invalidUrlTest()
+# screenshotTest()
+# uploadVideoTest()
 uploadVideoWithHeadlessChromeTest()

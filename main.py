@@ -154,7 +154,19 @@ def main():
     videoData = {"Title" : title, "Description" : description}
 
     #Upload video to youtube
-    screenShotter.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
+    count = 0
+    while count <= 4:
+        count += 1
+        try:
+            screenShotter.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
+        except Exception as e:
+            #takes screenshot of current state of webpage to help figure out why it threw an error
+            screenShotter.driver.save_screenshot(f"error{count}.png")
+            if count == 4:
+                logger.error("Retries exceeded video upload failed, shutting down")
+                sys.exit()
+            logger.warn(f"Upload failed retrying {count}/3")
+
     logger.info("Video uploaded")
     logger.info(f"Video Name: {title}")
     logger.info("Background music used: " + randomBackgroundMusic)

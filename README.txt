@@ -21,18 +21,14 @@ Fails to log into gmail when faced with anti-bot countermeasures
 Selenium will occasionally fail and then work under similar circumstances
 
 TODO:
-Change Reddit scraper return structure
-Add second passthrough of docstrings
-implement logger into classes
-Write tests for new text to speech methods
-write tests for new video methods
-Implement better censorship method
-Benchmark censorship methods
+Make method to help manage log.txt and visitedRedditPages.txt
 Use selenium to add tags to youtube shorts
 Implement proxy rotation to avoid google CAPTCHA
-Make method that changes audio pitch
+Write tests for all methods
+implement logger into classes
+Change Reddit scraper return structure
 Make constructor method for Audio class?
 Make constructor method for Video class?
-Make logs carry over
+Make method that changes audio pitch
 Give selenium better error handling
-Ignore posts about certain things
+Continue to improve censorship methods
