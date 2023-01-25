@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import sys
 sys.path.append('..')
+import random
 from src.redditScraper import RedditScraper
 
 
@@ -21,7 +22,6 @@ def getTopPostCommentsTest():
     assert type(comments[0]) == list
     assert comments[0][0] != comments[1][0]
     for i in comments:
-        #figure out what enumerate actually does?????
         for index, j in enumerate(i):
             assert type(j) == str
             if index == 1:
@@ -81,8 +81,47 @@ def contentFilterTest():
 
     print("Filter tests passed")
 
+def manageVisitedRedditPagesTest():
+    load_dotenv()
+    client_id = os.getenv('client_id')
+    client_secret = os.getenv('client_secret')
+    user_agent = os.getenv('user_agent')
+
+    reddit = RedditScraper(client_id, client_secret, user_agent)
+    f = open("visitedRedditPages.txt", "r")
+    startLines = f.readlines()
+    f.close()
+
+    reddit.manageVisitedRedditPages(10, 50)
+
+    assert os.path.exists("visitedRedditPages.txt")
+    f = open("visitedRedditPages.txt", "r")
+    lines = f.readlines()
+    f.close()
+    assert len(lines) == 50
+    assert len(lines) == len(reddit.pastUrls)
+    assert lines[0] == startLines[len(startLines) - 50]
+    assert lines[-1] == startLines[-1]
+    randomInt = random.randint(0, 50)
+    assert lines[len(lines) - randomInt] == startLines[len(startLines) - randomInt]
+    f = open("visitedRedditPages.txt", "w")
+    for line in startLines:
+        f.write(line)
+    f.close()
+
+    reddit.manageVisitedRedditPages(10000000, 50)
+
+    assert os.path.exists("visitedRedditPages.txt")
+    f = open("visitedRedditPages.txt", "r")
+    lines = f.readlines()
+    f.close()
+    assert len(lines) == len(startLines)
+
+    print("Manage visited reddit pages test passed")
 
 if __name__ == "__main__":
-    #getTopPostCommentsTest()
-    #parseTest()
-    contentFilterTest()
+
+    # getTopPostCommentsTest()
+    # parseTest()
+    # contentFilterTest()
+    manageVisitedRedditPagesTest()

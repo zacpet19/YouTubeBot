@@ -13,6 +13,10 @@ class RedditScraper:
         self.shouldCensor = False
         self.shouldIgnore = False
         self.pastUrls = set()
+
+        if not os.path.exists("./visitedRedditPages.txt"):
+            f = open("./visitedRedditPages.txt", "x")
+            f.close()
         try:
             f = open("visitedRedditPages.txt", "r")
             lines = f.readlines()
@@ -186,3 +190,20 @@ class RedditScraper:
                     if -2 < (len(word) - len(token)) < 2:
                         return True
         return False
+
+    def manageVisitedRedditPages(self, bytesAllowed, urlsToBringOver):
+        if os.stat("./visitedRedditPages.txt").st_size > bytesAllowed:
+            f = open("./visitedRedditPages.txt", "r")
+            lines = f.readlines()
+            f.close()
+            #takes the bottom section of the txt file which should the newest urls added
+            mostRecentUrls = lines[len(lines) - urlsToBringOver: len(lines)]
+            #opening file in "w" mode removes all data from it
+            f = open("./visitedRedditPages.txt", "w")
+            self.pastUrls = set()
+            for url in mostRecentUrls:
+                self.pastUrls.add(url)
+                f.write(url)
+            f.close()
+
+

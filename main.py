@@ -159,6 +159,7 @@ def main():
         count += 1
         try:
             screenShotter.uploadYoutubeVideo(channel, gmail, password, finalVideoPath, videoData)
+            count += 10
         except Exception as e:
             #takes screenshot of current state of webpage to help figure out why it threw an error
             screenShotter.driver.save_screenshot(f"error{count}.png")
@@ -173,6 +174,7 @@ def main():
     logger.info("Background video used " + randomBackgroundVideo)
 
     logger.manageLogFile(5, 100000)
+    reddit.manageVisitedRedditPages(30000, 150)
 
 
 if __name__ == '__main__':
