@@ -21,9 +21,9 @@ Fails to log into gmail when faced with anti-bot countermeasures
 Selenium will occasionally fail and then work under similar circumstances
 
 TODO:
-Make method to help manage log.txt and visitedRedditPages.txt
 Use selenium to add tags to youtube shorts
 Implement proxy rotation to avoid google CAPTCHA
+Make upload method work with 2-factor authentication
 Write tests for all methods
 implement logger into classes
 Change Reddit scraper return structure

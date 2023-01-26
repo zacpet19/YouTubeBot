@@ -151,7 +151,9 @@ def main():
         title = f"{title[:50]}..."
     description = f"{comments[fileNumber - 1][0]}\n\n To make videos like this check out my gitgub at " \
                   f"github.com/zacpet19/YouTubeBot"
-    videoData = {"Title" : title, "Description" : description}
+    #tags should be a list of tag(s)
+    tags = ["funny", "music", "entertainment", "minecraft", "game", "gaming"]
+    videoData = {"Title" : title, "Description" : description, "Tags" : tags}
 
     #Upload video to youtube
     count = 0

@@ -1,5 +1,5 @@
 import sys
-import os   
+import os
 sys.path.append('..')
 from dotenv import load_dotenv
 
@@ -12,7 +12,7 @@ def invalidPathTest():
         a.screenShotReddit(["https://www.reddit.com/r/csMajors/comments/zn6k7r/recruiter_call_wasted_me_whole_30_mins_and_tells/"])
     except Exception:
         errorThrown = True
-    
+
     assert errorThrown == True
     print("Invalid Path Test Passed")
 
@@ -38,6 +38,7 @@ def screenshotTest():
     print("Screenshot Test Passed")
 
 def uploadVideoTest():
+    # NOTE: This test does not delete the uploaded YouTube video
     load_dotenv()
 
     gmail = os.getenv('gmail')
@@ -45,7 +46,8 @@ def uploadVideoTest():
     channel = os.getenv('youtubeChannel')
     videoPath = os.getenv("testFinalVideoPath")
     driverLocation = os.getenv("driver_location")
-    videoData = {"Title" : "Test", "Description" : "This is a test upload"}
+    videoData = {"Title" : "Test", "Description" : "This is a headless chrome test upload", "Tags" :
+        ["funny", "music", "entertainment", "minecraft", "game", "gaming"]}
 
     web = WebHandler(driverLocation)
     web.uploadYoutubeVideo(channel, gmail, password, videoPath, videoData)
@@ -55,6 +57,7 @@ def uploadVideoTest():
 
 
 def uploadVideoWithHeadlessChromeTest():
+    #NOTE: This test does not delete the uploaded YouTube video
     load_dotenv()
 
     gmail = os.getenv('gmail')
@@ -62,8 +65,7 @@ def uploadVideoWithHeadlessChromeTest():
     channel = os.getenv('youtubeChannel')
     videoPath = os.getenv("testFinalVideoPath")
     driverLocation = os.getenv("driver_location")
-    videoData = {"Title" : "Headless Test", "Description" : "This is a headless chrome test upload"}
-
+    videoData = {"Title" : "Headless Test", "Description" : "This is a headless chrome test upload", "Tags" : "Test"}
     web = WebHandler(driverLocation, headless=True)
     web.uploadYoutubeVideo(channel, gmail, password, videoPath, videoData)
 
@@ -74,5 +76,5 @@ def uploadVideoWithHeadlessChromeTest():
 # invalidPathTest()
 # invalidUrlTest()
 # screenshotTest()
-# uploadVideoTest()
-uploadVideoWithHeadlessChromeTest()
+uploadVideoTest()
+#uploadVideoWithHeadlessChromeTest()

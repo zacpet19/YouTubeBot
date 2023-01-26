@@ -177,22 +177,6 @@ class WebHandler:
         #typing Youtube video description
         elementToMoveTo = self.driver.find_element(By.ID, "description-container")
         action.click(elementToMoveTo).send_keys(videoInfo["Description"]).perform()
-        #this is suppose to pick a randomly generated youtube thumbnail but Youtube can pick on automatically
-        """elementToMoveTo = self.driver.find_element(By.ID, "still-picker")
-        action.scroll_to_element(elementToMoveTo).perform()
-        attempts = 0
-        while attempts < 5:
-            try:
-                attempts += 1
-                WebDriverWait(self.driver, 6).until(EC.element_to_be_clickable((elementToMoveTo)))
-                print("element is clickable")
-                break
-            except Exception as e:
-                if attempts >= 5:
-                    print("Couldn't locate provided element or page took too long to load")
-                    raise e
-        action.click(elementToMoveTo).perform()
-        """
         #these next two lines dont do anything as of right now but is necessary to add tags at a later point
         #clicks button that says video is not made for kids
         elementToMoveTo = self.driver.find_element(By.ID, "toggle-button")
@@ -202,6 +186,14 @@ class WebHandler:
         action.move_by_offset(yoffset=25, xoffset=0).click().perform()
         elementToMoveTo = self.driver.find_element(By.ID, "toggle-button")
         action.scroll_to_element(elementToMoveTo).click(elementToMoveTo).perform()
+        #adding tags to video
+        elementToMoveTo = self.driver.find_element(By.ID, "tags-container")
+        action.scroll_to_element(elementToMoveTo).perform()
+        action.click(elementToMoveTo).perform()
+        for tag in videoInfo["Tags"]:
+            action.send_keys(tag).perform()
+            action.send_keys(enter).perform()
+            action.pause(5)
         elementToMoveTo = self.driver.find_element(By.ID, "next-button")
         action.click(elementToMoveTo).perform()
         action.click(elementToMoveTo).perform()
