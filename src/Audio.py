@@ -133,11 +133,11 @@ class AudioMethods:
             return False
         #the audio being changed is looped if it is not longer than the other clip
         if clip.duration < clipToChange.duration:
-            clipToChangeSubclip = clipToChange.subclip(0, clip.duration - 1)
+            clipToChangeSubclip = clipToChange.subclip(0, clip.duration)
             clipToChangeSubclip.write_audiofile("audio/modMusic.mp3")
             clipToChangeSubclip.close()
         else:
-            clipToChangeLooped = audio_loop(clipToChange, duration=clip.duration - 1)
+            clipToChangeLooped = audio_loop(clipToChange, duration=clip.duration)
             clipToChangeLooped.write_audiofile("audio/modMusic.mp3")
             clipToChangeLooped.close()
         clip.close()

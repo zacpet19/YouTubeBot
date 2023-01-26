@@ -193,7 +193,6 @@ class WebHandler:
         for tag in videoInfo["Tags"]:
             action.send_keys(tag).perform()
             action.send_keys(enter).perform()
-            action.pause(5)
         elementToMoveTo = self.driver.find_element(By.ID, "next-button")
         action.click(elementToMoveTo).perform()
         action.click(elementToMoveTo).perform()

@@ -174,7 +174,7 @@ class RedditScraper:
         return stringBuilder[:len(stringBuilder) - 1]
 
     def subredditList(self):
-        subreddits = ["csmajors", "amItheasshole", "askreddit"]
+        subreddits = ["csmajors", "amItheasshole", "askreddit", "UnresolvedMysteries"]
         return subreddits
 
     def contentFilter(self, string : str) -> bool:

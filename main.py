@@ -79,7 +79,7 @@ def main():
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
     randomBackgroundMusic = AudioMethods.getRandomFile("bndms")
 
-    AudioMethods.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .2)
+    AudioMethods.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .15)
     AudioMethods.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
     logger.info("background music created")
 
@@ -90,7 +90,7 @@ def main():
     #Get duration of the merged .mp3 file
     finalAudio = AudioFileClip("audio/finalAudio.mp3")
     #TODO: Test if int casting this number could be whats causing audio issues
-    finalAudioDuration = int(finalAudio.duration)
+    finalAudioDuration = finalAudio.duration
     finalAudio.close()
     #Pull random video from bndvd directory and format it for youtube shorts
     randomBackgroundVideo = AudioMethods.getRandomFile("bndvd")
