@@ -36,6 +36,7 @@ class WebHandler:
         except Exception as e:
             print("Error : failed to open chrome driver")
             raise e
+        action = ActionChains(self.driver)
         if not os.path.exists("./images"):
             os.makedirs("./images")
         self.driver.maximize_window()
@@ -51,6 +52,9 @@ class WebHandler:
             except Exception as e:
                 print("Error: failed to find CSS element on webpage")
                 raise e
+            #this pause is to give reddit comments more time to load because some posts have very long comment chains
+            #TODO: Find way to get rid of hard pause
+            action.pause(2).perform()
             image = element.screenshot_as_png
             imageStream = io.BytesIO(image)
             im = Image.open(imageStream)
@@ -58,6 +62,9 @@ class WebHandler:
             count += 1
         #screenshotting comments
         for (index, c) in enumerate(commentIds):
+            # this pause is to give reddit comments more time to load because some posts have very long comment chains
+            # TODO: Find way to get rid of hard pause
+            action.pause(2).perform()
             try:
                 #Praw doesnt pull entire comment ID but they all start with t1_
                 element = self.driver.find_element(By.ID, "t1_" + c)
@@ -192,7 +199,6 @@ class WebHandler:
         action.click(elementToMoveTo).perform()
         for tag in videoInfo["Tags"]:
             action.send_keys(tag).perform()
-            action.send_keys(enter).perform()
         elementToMoveTo = self.driver.find_element(By.ID, "next-button")
         action.click(elementToMoveTo).perform()
         action.click(elementToMoveTo).perform()

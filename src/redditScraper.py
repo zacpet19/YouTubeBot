@@ -93,7 +93,6 @@ class RedditScraper:
                 if count > 5:
                     break
             postInfo.append(tempList)
-        print(postInfo)
         #Document visited urls to avoid duplicate
         f = open("visitedRedditPages.txt", "a")
         for url in urlArray:
@@ -174,7 +173,8 @@ class RedditScraper:
         return stringBuilder[:len(stringBuilder) - 1]
 
     def subredditList(self):
-        subreddits = ["csmajors", "amItheasshole", "askreddit", "UnresolvedMysteries"]
+        subreddits = ["csmajors", "amItheasshole", "askreddit", "UnresolvedMysteries", "confession", "confessions",
+                      "tifu", "TalesFromRetail", "MilitaryStories", "relationship_advice"]
         return subreddits
 
     def contentFilter(self, string : str) -> bool:
@@ -187,7 +187,7 @@ class RedditScraper:
                 if word.lower() == token.lower():
                     return True
                 elif word.lower() in token.lower():
-                    if -2 < (len(word) - len(token)) < 2:
+                    if -2 <= (len(word) - len(token)) <= 2:
                         return True
         return False
 

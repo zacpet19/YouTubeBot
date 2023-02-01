@@ -71,6 +71,7 @@ def contentFilterTest():
     test4 = "Hello there"
     test5 = "I am having a good time and not saying anything that should be filtered."
     test6 = ""
+    test7 = "What could be done to prevent mass shootings?"
 
     assert reddit.contentFilter(test1) is True
     assert reddit.contentFilter(test2) is True
@@ -78,6 +79,7 @@ def contentFilterTest():
     assert reddit.contentFilter(test4) is False
     assert reddit.contentFilter(test5) is False
     assert reddit.contentFilter(test6) is False
+    assert reddit.contentFilter(test7) is True
 
     print("Filter tests passed")
 
@@ -123,5 +125,5 @@ if __name__ == "__main__":
 
     # getTopPostCommentsTest()
     # parseTest()
-    # contentFilterTest()
-    manageVisitedRedditPagesTest()
+    contentFilterTest()
+    #manageVisitedRedditPagesTest()

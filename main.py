@@ -41,7 +41,7 @@ def main():
     #determines if the post used has a body or not
     postBody = True
     count = 0
-    retries = 5
+    retries = 20
     reddit = RedditScraper(client_id, client_secret, user_agent)
     #loops until it is able to get a usable mp3 file from Reddit posts
     while not foundUsableRedditPosts:
@@ -63,6 +63,7 @@ def main():
         parsedTextToSpeech = AudioMethods.parseTextToSpeechMP3s()
         if len(parsedTextToSpeech) > 0:
             foundUsableRedditPosts = True
+            logger.info(f"Reddit post used: {comments}")
         else:
             logger.warn(f"Reddit posts not accepted, retrying {count}/{retries}...")
 
@@ -146,13 +147,13 @@ def main():
     logger.info("Final video given Audio")
 
     #Pull title and description from comments
-    title = comments[fileNumber - 1][0]
+    title = f"{comments[fileNumber - 1][0].upper()}!?!?!?#Shorts"
     if len(title) > 50:
-        title = f"{title[:50]}..."
-    description = f"{comments[fileNumber - 1][0]}\n\n To make videos like this check out my gitgub at " \
+        title = f"{title[:50].upper()}!?!?!? #Shorts  "
+    description = f"{comments[fileNumber - 1][0]}\n\n To make videos like this check out my github at " \
                   f"github.com/zacpet19/YouTubeBot"
     #tags should be a list of tag(s)
-    tags = ["funny", "music", "entertainment", "minecraft", "game", "gaming"]
+    tags = ["funny,", "music,", "entertainment,", "minecraft,", "game,", "gaming,", "reddit,"]
     videoData = {"Title" : title, "Description" : description, "Tags" : tags}
 
     #Upload video to youtube
