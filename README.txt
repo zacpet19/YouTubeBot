@@ -21,6 +21,7 @@ Fails to log into gmail when faced with anti-bot countermeasures
 Selenium will occasionally fail and then work under similar circumstances
 
 TODO:
+Invesigate issue where video wont upload properly if title is too short
 Use selenium to add tags to youtube shorts
 Implement proxy rotation to avoid google CAPTCHA
 Make upload method work with 2-factor authentication

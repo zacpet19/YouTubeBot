@@ -90,7 +90,6 @@ def main():
 
     #Get duration of the merged .mp3 file
     finalAudio = AudioFileClip("audio/finalAudio.mp3")
-    #TODO: Test if int casting this number could be whats causing audio issues
     finalAudioDuration = finalAudio.duration
     finalAudio.close()
     #Pull random video from bndvd directory and format it for youtube shorts

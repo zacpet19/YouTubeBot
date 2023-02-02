@@ -164,8 +164,9 @@ class VideoMethods:
 
     @staticmethod
     def deleteImageVideoFolder():
-        if os.path.exists("C:/Users/zachp/PycharmProjects/Test/video/imageVideo"):
-            shutil.rmtree("C:/Users/zachp/PycharmProjects/Test/video/imageVideo")
+        if os.path.exists("./video/imageVideo"):
+            #Be careful messing with this as it deletes entire directories
+            shutil.rmtree("./video/imageVideo")
 
 
     @staticmethod
