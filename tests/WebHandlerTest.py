@@ -46,8 +46,8 @@ def uploadVideoTest():
     channel = os.getenv('youtubeChannel')
     videoPath = os.getenv("testFinalVideoPath")
     driverLocation = os.getenv("driver_location")
-    videoData = {"Title" : "Test", "Description" : "This is a headless chrome test upload", "Tags" :
-        ["funny", "music", "entertainment", "minecraft", "game", "gaming"]}
+    videoData = {"Title" : "Test #shorts", "Description" : "This is a headless chrome test upload", "Tags" :
+        ["funny,", "music,", "entertainment,", "minecraft,", "game,", "gaming"]}
 
     web = WebHandler(driverLocation)
     web.uploadYoutubeVideo(channel, gmail, password, videoPath, videoData)
@@ -65,7 +65,8 @@ def uploadVideoWithHeadlessChromeTest():
     channel = os.getenv('youtubeChannel')
     videoPath = os.getenv("testFinalVideoPath")
     driverLocation = os.getenv("driver_location")
-    videoData = {"Title" : "Headless Test", "Description" : "This is a headless chrome test upload", "Tags" : "Test"}
+    videoData = {"Title": "Test #shorts", "Description": "This is a headless chrome test upload", "Tags":
+        ["funny,", "music,", "entertainment,", "minecraft,", "game,", "gaming"]}
     web = WebHandler(driverLocation, headless=True)
     web.uploadYoutubeVideo(channel, gmail, password, videoPath, videoData)
 

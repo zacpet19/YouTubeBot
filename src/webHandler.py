@@ -181,6 +181,8 @@ class WebHandler:
         action.pause(10)
         #typing Youtube video title
         action.send_keys(videoInfo["Title"]).perform()
+        # this clears the menu that comes up when putting a # does nothing if there is no #'s in the title
+        action.send_keys(enter).perform()
         #typing Youtube video description
         elementToMoveTo = self.driver.find_element(By.ID, "description-container")
         action.click(elementToMoveTo).send_keys(videoInfo["Description"]).perform()
