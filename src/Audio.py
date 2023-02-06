@@ -223,10 +223,24 @@ class AudioMethods:
         change.write_audiofile(newFileName)
         newClip.close()
         change.close()
-
-
-
-
-
-
+        
+    @staticmethod
+    def changeAudioClipStart(clipPath : str, newClip : str, newStart : float):
+        """Takes in a filepath to an audio file and then while keeping the original duration starts the clip at the
+        newly provided start time. Moving the front part of the clip to the end."""
+        try:
+            clip = AudioFileClip(clipPath)
+        except Exception as e:
+            print("Error: Failed to find provided filepath.")
+            return False
+        if newStart >= clip.duration:
+            print(f"Error: The new start must be within the bounds of the provided clips duration: {clip.duration}")
+            clip.close()
+            return False
+        firstPart = clip.subclip(newStart, clip.duration)
+        secondPart = clip.subclip(0, newStart)
+        final = concatenate_audioclips([firstPart, secondPart])
+        final.write_audiofile(newClip)
+        clip.close()
+        
 
