@@ -80,7 +80,9 @@ class RedditScraper:
             urlArray.append(post.url)
             count = 0
             for top_level_comment in post.comments:
-                if(top_level_comment.stickied):
+                # dont actually know if the comment.collapsed works but is meant to avoid collapsed comments because
+                # they are inconvenient to screenshot. Couldnt find it on the actual docs but chatGPT says it works
+                if top_level_comment.stickied or top_level_comment.collapsed:
                     continue
                 parsed = self.parseComments(top_level_comment.body)
                 #Ignore comments that are too long

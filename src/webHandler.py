@@ -64,7 +64,7 @@ class WebHandler:
         for (index, c) in enumerate(commentIds):
             # this pause is to give reddit comments more time to load because some posts have very long comment chains
             # TODO: Find way to get rid of hard pause
-            action.pause(2).perform()
+            action.pause(4).perform()
             try:
                 #Praw doesnt pull entire comment ID but they all start with t1_
                 element = self.driver.find_element(By.ID, "t1_" + c)
