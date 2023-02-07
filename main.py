@@ -79,8 +79,21 @@ def main():
 
     #Pull random audio file from bndms directory and change it's length to match the first TTS file
     randomBackgroundMusic = AudioMethods.getRandomFile("bndms")
-
-    AudioMethods.changeAudioClipVolume(f"bndms/{randomBackgroundMusic}", "audio/changedVol.mp3", .15)
+    
+    #getting duration of background music
+    clip = AudioFileClip(f"bndms/{randomBackgroundMusic}")
+    #clip 2 is the duration of the TTS file
+    clip2 = AudioFileClip(parsedTextToSpeech[0])
+    clipDuration = clip.duration
+    clip2Duration = clip2.duration
+    clip.close()
+    clip2.close()
+    
+    #creates a new clip with a new start to give more variation to music used clipDuration - clip2Duration avoids
+    #going out of bounds of the AudioFileClip in the changeAudioClipStart method
+    AudioMethods.changeAudioClipStart(f"bndms/{randomBackgroundMusic}", "audio/newStart.mp3",
+                                      int(random.uniform(0, clipDuration - clip2Duration)), clip2Duration)
+    AudioMethods.changeAudioClipVolume("audio/newStart.mp3", "audio/changedVol.mp3", .15)
     AudioMethods.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
     logger.info("background music created")
 
@@ -146,9 +159,9 @@ def main():
     logger.info("Final video given Audio")
 
     #Pull title and description from comments
-    title = f"{comments[fileNumber - 1][0].upper()}!?!?!?#Shorts"
+    title = f"{comments[fileNumber - 1][0].upper()}!?!?!? #Shorts "
     if len(title) > 50:
-        title = f"{title[:50].upper()}!?!?!? #Shorts  "
+        title = f"{title[:50].upper()}!?!?!? #Shorts "
     description = f"{comments[fileNumber - 1][0]}\n\n To make videos like this check out my github at " \
                   f"github.com/zacpet19/YouTubeBot"
     #tags should be a list of tag(s)
