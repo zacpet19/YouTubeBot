@@ -233,10 +233,10 @@ class AudioMethods:
         except Exception as e:
             print("Error: Failed to find provided filepath.")
             return False
-        if newStart >= clip.duration:
-            print(f"Error: The new start must be within the bounds of the provided clips duration: {clip.duration}")
-            clip.close()
-            return False
+        if newStart >= clip.duration or newStart < 0:
+            print(f"Warn: The new start must be within the bounds of the provided clips duration: {clip.duration}")
+            print("New clip will be renamed with newStart set to 0")
+            newStart = 0
         #Just saves the file with the new name if the clip isnt longer than the provided duration
         if duration >= clip.duration:
             clip.write_audiofile(newClip)

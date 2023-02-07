@@ -92,7 +92,7 @@ def main():
     #creates a new clip with a new start to give more variation to music used clipDuration - clip2Duration avoids
     #going out of bounds of the AudioFileClip in the changeAudioClipStart method
     AudioMethods.changeAudioClipStart(f"bndms/{randomBackgroundMusic}", "audio/newStart.mp3",
-                                      int(random.uniform(0, clipDuration - clip2Duration)), clip2Duration)
+                                      random.uniform(0, clipDuration - clip2Duration), clip2Duration)
     AudioMethods.changeAudioClipVolume("audio/newStart.mp3", "audio/changedVol.mp3", .15)
     AudioMethods.makeAudioFileSameLength(parsedTextToSpeech[0], "audio/changedVol.mp3")
     logger.info("background music created")
